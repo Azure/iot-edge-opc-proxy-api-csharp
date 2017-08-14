@@ -26,17 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Microsoft.Azure.Devices.Proxy\Microsoft.Azure.Devices.Proxy.csproj" />
-    <ProjectReference Include="..\provider\webapp\src\Microsoft.Azure.Devices.Proxy.AspNet\Microsoft.Azure.Devices.Proxy.AspNet.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="testCert.pfx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Microsoft.Azure.Devices.Proxy\Microsoft.Azure.Devices.Proxy.csproj" />
+    <ProjectReference Include="..\provider\webapp\src\Microsoft.Azure.Devices.Proxy.AspNet\Microsoft.Azure.Devices.Proxy.AspNet.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -49,14 +44,6 @@
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='net46'">
-    <DefineConstants>$(DefineConstants);NET46</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='net45'">
-    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
   </PropertyGroup>
 
 </Project>
