@@ -6,6 +6,11 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 |------|-------------|
 |master|[![Build status]([![Build status](https://ci.appveyor.com/api/projects/status/3yl5qbw7coh9rjua/branch/master?svg=true)](https://ci.appveyor.com/project/marcschier/iot-edge-opc-proxy-api-csharp/branch/master) [![Build Status](https://travis-ci.org/Azure/iot-edge-opc-proxy-api-csharp.svg?branch=master)](https://travis-ci.org/Azure/iot-edge-opc-proxy-api-csharp)|
 
+# Azure IoT Edge OPC Proxy API
+
+Using the Azure IoT Edge OPC Reverse Proxy API, client applications can connect to devices in a local gateway network and exchange transparent payloads, allowing developers to implement applications in Azure where the command and control protocol layer resides in the cloud. 
+
+The OPC proxy edge gateway module itself can be found at https://github.com/Azure/iot-edge-opc-proxy.
 
 # Getting started
 
@@ -26,7 +31,7 @@ The following samples are included to demonstrate the use of the .net API:
 - An [OPC UA client](/api/csharp/samples/opc-ua/readme.md) that shows how the [OPC-Foundation reference stack](https://github.com/OPCFoundation/UA-.NETStandardLibrary) can be used to relay OPC UA from the cloud to machines in a local gateway network. 
 
 - PNetCat - A [Netcat like proxy client](/api/csharp/samples/netcat/readme.md) that you can use to interact
-with an arbitrary host and port in the proxy network and for example tunnel SSH using the ssh proxy option.
+with an arbitrary host and port in the proxy network and for example tunnel SSH using the ssh proxy option.  It supports port bridge server and stdin/stdout netcat mode.
 
 - A [Simple TCP/IP services client](/api/csharp/samples/simple/tcp/readme.md) that demonstrates different socket API calls.
 
