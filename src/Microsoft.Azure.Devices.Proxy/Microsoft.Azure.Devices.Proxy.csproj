@@ -5,13 +5,13 @@
     <AssemblyTitle>Microsoft Azure Devices Proxy API</AssemblyTitle>
     <VersionPrefix>1.0.3</VersionPrefix>
     <Authors>microsoft</Authors>
-    <TargetFrameworks>net46;net45;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;1734</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Microsoft.Azure.Devices.Proxy</AssemblyName>
     <PackageId>Microsoft.Azure.Devices.Proxy</PackageId>
-    <PackageTags>Azure;IoT;.NET;Relay;websocket;Proxy</PackageTags>
+    <PackageTags>Azure;IoT;Edge;websocket;Proxy;.NET</PackageTags>
     <PackageReleaseNotes>https://github.com/Azure/iot-edge-opc-proxy/releases</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/Azure/iot-edge-opc-proxy</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/iot-edge-opc-proxy/master/LICENSE</PackageLicenseUrl>

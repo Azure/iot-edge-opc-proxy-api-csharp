@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>1.0.3</VersionPrefix>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>net46</TargetFramework>
     <AssemblyName>Server</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Server</PackageId>
@@ -23,7 +23,7 @@
     <PackageReference Include="RemoteViewing" Version="0.9.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />

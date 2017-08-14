@@ -5,7 +5,7 @@
     <AssemblyTitle>Asp.NET Core websocket stream provider implementation for Azure IoT proxy</AssemblyTitle>
     <VersionPrefix>1.0.3</VersionPrefix>
     <Authors>microsoft</Authors>
-    <TargetFrameworks>net46;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <NoWarn>$(NoWarn);1591;1734</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -34,11 +34,6 @@
     <ProjectReference Include="..\..\..\..\..\src\Microsoft.Azure.Devices.Proxy\Microsoft.Azure.Devices.Proxy.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
   </PropertyGroup>
@@ -49,14 +44,6 @@
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='net46'">
-    <DefineConstants>$(DefineConstants);NET46</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='net45'">
-    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
   </PropertyGroup>
 
 </Project>

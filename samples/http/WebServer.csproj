@@ -3,7 +3,7 @@
     <VersionPrefix>1.0.3</VersionPrefix>
     <Description>Simple Reverse Webproxy sample application</Description>
     <AssemblyTitle>Simple Reverse Webproxy sample</AssemblyTitle>
-    <TargetFrameworks>netcoreapp1.1;net46</TargetFrameworks>
+    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
     <AssemblyName>WebServer</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Webserver</PackageId>

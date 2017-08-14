@@ -4,7 +4,7 @@
     <VersionPrefix>1.0.3</VersionPrefix>
     <Description>A Netcat like client using Azure Device proxy library</Description>
     <AssemblyTitle>PNetcat sample application</AssemblyTitle>
-    <TargetFrameworks>netcoreapp1.1;net46</TargetFrameworks>
+    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
     <AssemblyName>PNetcat</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>PNetcat</PackageId>
@@ -34,18 +34,5 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='net46'">
-    <DefineConstants>$(DefineConstants);NET46</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Platform)'=='net45'">
-    <DefineConstants>$(DefineConstants);NET45</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net46' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
 
 </Project>
