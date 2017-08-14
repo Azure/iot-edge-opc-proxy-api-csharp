@@ -2,6 +2,14 @@ version: 1.0.3.{build}
 image: Visual Studio 2017
 environment:
   matrix:
-  - solution_name: proxy-api-csharp.sln
+    - proxy-api: release
+      build_args: -c Release
+    - proxy-api: debug
+      build_args: -c Debug
 matrix:
     fast_finish: true
+before_build:
+  – appveyor-retry dotnet restore
+build_script:
+  – dotnet pack %build_args%
+

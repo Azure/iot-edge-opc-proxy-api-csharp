@@ -7,6 +7,6 @@ install:
   - sudo apt-get update
   - sudo apt-get install dotnet-dev-1.0.4 -y
 script: 
-  - dotnet restore "proxy-api-csharp.sln"
+  - dotnet restore
   - dotnet build -c Debug
   - dotnet build -c Release
