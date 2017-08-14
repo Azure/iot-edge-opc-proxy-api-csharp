@@ -1,0 +1,7 @@
+version: 1.0.3.{build}
+image: Visual Studio 2017
+environment:
+  matrix:
+  - solution_name: proxy-api-csharp.sln
+matrix:
+    fast_finish: true
