@@ -9,7 +9,7 @@ environment:
 matrix:
     fast_finish: true
 before_build:
-  – appveyor-retry dotnet restore
+  - dotnet restore
 build_script:
-  – dotnet pack %build_args%
+  - dotnet pack %build_args%
 
