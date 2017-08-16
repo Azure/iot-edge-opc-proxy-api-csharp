@@ -24,16 +24,16 @@ You also need to start the proxy gateway itself.  You can run it using [docker](
 
 The following samples are included to demonstrate the use of the .net API:
 
-- An [OPC UA client](/api/csharp/samples/opc-ua/readme.md) that shows how the [OPC-Foundation reference stack](https://github.com/OPCFoundation/UA-.NETStandardLibrary) can be used to relay OPC UA from the cloud to machines in a local gateway network. 
+- An [OPC UA client](/samples/opc-ua/readme.md) that shows how the [OPC-Foundation reference stack](https://github.com/OPCFoundation/UA-.NETStandardLibrary) can be used to relay OPC UA from the cloud to machines in a local gateway network. 
 
-- PNetCat - A [Netcat like proxy client](/api/csharp/samples/netcat/readme.md) that you can use to interact
+- PNetCat - A [Netcat like proxy client](/samples/netcat/readme.md) that you can use to interact
 with an arbitrary host and port in the proxy network and for example tunnel SSH using the ssh proxy option.  It supports port bridge server and stdin/stdout netcat mode.
 
-- A [Simple TCP/IP services client](/api/csharp/samples/simple/tcp/readme.md) that demonstrates different socket API calls.
+- A [Simple TCP/IP services client](/samples/simple/tcp/readme.md) that demonstrates different socket API calls.
 
-- A [Browser client](/api/csharp/samples/simple/dns/readme.md) that uses the remote browsing capabilities of the proxy.  Use it to enumerate services and resolve host names across all proxies.
+- A [Browser client](/samples/simple/dns/readme.md) that uses the remote browsing capabilities of the proxy.  Use it to enumerate services and resolve host names across all proxies.
 
-- A simple [Reverse HTTP Web Proxy](/api/csharp/samples/http/readme.md) that shows how you can access a web server in the proxy network through a reverse Web proxy Server implemented using ASP.Net Core and Kestrel. 
+- A simple [Reverse HTTP Web Proxy](/samples/http/readme.md) that shows how you can access a web server in the proxy network through a reverse Web proxy Server implemented using ASP.Net Core and Kestrel. 
 
 # Support and Contributions
 
@@ -45,13 +45,13 @@ When you submit a pull request, a CLA-bot will automatically determine whether y
 a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
 provided by the bot. You will only need to do this once across all repos using our CLA.
 
-If you are having issues compiling or using the code in this project please feel free to log an issue in the [issues section](https://github.com/Azure/iot-edge-opc-proxy/issues) of this project.
+If you are having issues compiling or using the code in this project please feel free to log an issue in the [issues section](https://github.com/Azure/iot-edge-opc-proxy-api-csharp/issues) of this project.
 
 For other issues, such as Connectivity issues or problems with the portal, or issues using the Azure IoT Hub service the Microsoft Customer Support team will try and help out on a best effort basis.
 To engage Microsoft support, you can create a support ticket directly from the [Azure portal](https://ms.portal.azure.com/#blade/Microsoft_Azure_Support/HelpAndSupportBlade).
 
 # License
 
-The Azure IoT OPC Proxy module is licensed under the [MIT License](https://github.com/Azure/iot-edge-opc-proxy/blob/master/LICENSE). You can find license information for all third party dependencies [here](https://github.com/Azure/iot-edge-opc-proxy/blob/master/thirdpartynotice.txt). Depending on your build configuration, or your choice of platform, not all of the third party dependencies need to be utilized.
+The Azure IoT OPC Proxy module is licensed under the [MIT License](https://github.com/Azure/iot-edge-opc-proxy-api-csharp/blob/master/LICENSE). 
 
 Visit http://azure.com/iotdev to learn more about developing applications for Azure IoT.
