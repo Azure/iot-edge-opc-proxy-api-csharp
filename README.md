@@ -16,7 +16,7 @@ The OPC proxy gateway itself can be found at https://github.com/Azure/iot-edge-o
 
 > Before you run any of the included samples, you must obtain a service manage *connection string* for your IoT Hub. You can use the *iothubowner* connection string (going forward referred to as **<*iothubownerconnectionstring>**) which can easily be found on the [Azure portal](https://portal.azure.com) in the "Shared Access Policies" section of the [IoT hub settings blade](https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal#change-the-settings-of-the-iot-hub). For more information checkout out the documentation [here](https://github.com/Azure/azure-iot-device-ecosystem/blob/master/setup_iothub.md).
 
-You also need to start the proxy gateway itself.  You can run it using [docker](https://www.docker.com/get-docker) (```docker run -it microsoft/iot-gateway-opc-ua-proxy -c "<*iothubownerconnectionstring>"```) or by following the instructions at https://github.com/Azure/iot-edge-opc-proxy.
+You also need to start the proxy gateway itself.  You can run it using [docker](https://www.docker.com/get-docker) (```docker run -h myproxy -it microsoft/iot-gateway-opc-ua-proxy -c "<*iothubownerconnectionstring>"```) or by following the instructions at https://github.com/Azure/iot-edge-opc-proxy.
 
 # Samples
 
