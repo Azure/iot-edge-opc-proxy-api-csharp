@@ -95,7 +95,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Close sync
         /// </summary>
-#if NET46 || NET45
+#if !NETSTANDARD1_3
         public override void Close() {
 #else
         public void Close() {

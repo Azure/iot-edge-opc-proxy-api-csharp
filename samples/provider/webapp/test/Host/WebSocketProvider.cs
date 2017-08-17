@@ -54,10 +54,11 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 });
             })
             .UseKestrel(options => {
-                options.NoDelay = true;
+#if NETSTANDARD1_3
                 if (url.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase)) {
                     options.UseHttps("testCert.pfx", "testPassword");
                 }
+                options.NoDelay = true;
                 options.UseConnectionLogging();
                 if (config["threadCount"] != null) {
                     options.ThreadCount = int.Parse(config["threadCount"]);
@@ -68,6 +69,20 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 if (options.ThreadCount == 0) {
                     options.ThreadCount = 1;
                 }
+#else
+                if (url.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase)) {
+                    // Verbose
+                    options.Listen(System.Net.IPAddress.Any, 443, listenOptions => {
+                        listenOptions.NoDelay = true;
+                        listenOptions.UseConnectionLogging();
+                        listenOptions.UseHttps("testCert.pfx", "testPassword");
+                    });
+                }
+                options.Listen(System.Net.IPAddress.Any, 80, listenOptions => {
+                    listenOptions.NoDelay = true;
+                    listenOptions.UseConnectionLogging();
+                });
+#endif
             })
             .UseUrls(endpoint.ToString())
             .Build()

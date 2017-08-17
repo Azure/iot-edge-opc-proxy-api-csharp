@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>1.0.3</VersionPrefix>
+    <VersionPrefix>1.0.4</VersionPrefix>
     <Description>Simple Dns Browser sample application</Description>
     <AssemblyTitle>Simple Dns Browser sample</AssemblyTitle>
-    <TargetFrameworks>netcoreapp1.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
     <AssemblyName>Browser</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Browser</PackageId>
-    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">1.1.2</RuntimeFrameworkVersion>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>true</GenerateAssemblyConfigurationAttribute>

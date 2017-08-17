@@ -54,12 +54,24 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 .UseConfiguration(config)
                 .UseStartup<Startup>()
                 .UseKestrel(options => {
-                    options.NoDelay = true;
+#if !NETCOREAPP2_0
                     options.UseHttps("testCert.pfx", "testPassword");
+                    options.NoDelay = true;
                     options.UseConnectionLogging();
                     if (config["threadCount"] != null) {
                         options.ThreadCount = int.Parse(config["threadCount"]);
                     }
+#else
+                    options.Listen(System.Net.IPAddress.Any, 443, listenOptions => {
+                        listenOptions.NoDelay = true;
+                        listenOptions.UseConnectionLogging();
+                        listenOptions.UseHttps("testCert.pfx", "testPassword");
+                    });
+                    options.Listen(System.Net.IPAddress.Any, 80, listenOptions => {
+                        listenOptions.NoDelay = true;
+                        listenOptions.UseConnectionLogging();
+                    });
+#endif
                 })
                 .UseUrls("http://*:8080", "https://*:8081")
                 ;
