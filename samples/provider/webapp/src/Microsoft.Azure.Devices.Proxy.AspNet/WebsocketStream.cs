@@ -31,20 +31,20 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Reading length is not supported
         /// </summary>
-        public override Int64 Length =>
+        public override long Length =>
             throw new NotSupportedException();
 
         /// <summary>
         /// And setting is also not supported
         /// </summary>
         /// <param name="value"></param>
-        public override void SetLength(Int64 value) =>
+        public override void SetLength(long value) =>
             throw new NotSupportedException();
 
         /// <summary>
         /// Setting position is not supported
         /// </summary>
-        public override Int64 Position {
+        public override long Position {
             get => throw new NotSupportedException();
             set => throw new NotSupportedException();
         }
@@ -52,7 +52,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Cannot seak
         /// </summary>
-        public override Boolean CanSeek { get; } = false;
+        public override bool CanSeek { get; } = false;
 
         /// <summary>
         /// Thus throw...
@@ -60,7 +60,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <param name="offset"></param>
         /// <param name="origin"></param>
         /// <returns></returns>
-        public override Int64 Seek(Int64 offset, SeekOrigin origin) =>
+        public override long Seek(long offset, SeekOrigin origin) =>
             throw new NotSupportedException();
 
 
@@ -106,15 +106,15 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Close async
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task CloseAsync(CancellationToken ct) {
+        public async Task CloseAsync(CancellationToken cancellationToken) {
             try {
-                await FlushAsync(ct).ConfigureAwait(false);
+                await FlushAsync(cancellationToken).ConfigureAwait(false);
             }
             catch { }
             await _websocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed",
-                ct).ConfigureAwait(false);
+                cancellationToken).ConfigureAwait(false);
             _websocket = null;
         }
 
@@ -127,10 +127,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Send final message and reposition read pointer to start of message
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public override async Task FlushAsync(CancellationToken ct) {
-            if (ct.IsCancellationRequested)
+        public override async Task FlushAsync(CancellationToken cancellationToken) {
+            if (cancellationToken.IsCancellationRequested)
                 return;
             if (IsClosed)
                 throw new IOException("Stream closed");
@@ -139,7 +139,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 try {
                     if (_needsFlush) {
                         await _websocket.SendAsync(new ArraySegment<byte>(_writebuffer, 0, _writePos),
-                            WebSocketMessageType.Binary, true, ct).ConfigureAwait(false);
+                            WebSocketMessageType.Binary, true, cancellationToken).ConfigureAwait(false);
                         _writePos = 0;
                         _needsFlush = false;
                     }
@@ -153,16 +153,16 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Reposition read pointer to start of message
         /// </summary>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SkipAsync(CancellationToken ct) {
+        public async Task SkipAsync(CancellationToken cancellationToken) {
             await _asyncRead.WaitAsync().ConfigureAwait(false);
             try {
                 while (!_readEnd) {
                     // Read until we hit the end
                     var result = await _websocket.ReceiveAsync(
                         new ArraySegment<byte>(_readbuffer, 0, _bufferSize),
-                            ct).ConfigureAwait(false);
+                            cancellationToken).ConfigureAwait(false);
                     _readEnd = result.EndOfMessage;
                     _readPos = _readLen = 0;
                 }
@@ -194,7 +194,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             var readByNow = ReadBuffer(buffer, offset, count);
             if (readByNow == count)
                 return readByNow;
-            else if (_readEnd) {
+            if (_readEnd) {
                 // Indicate end of stream and reset end message marker
                 _readEnd = false;
                 return readByNow;
@@ -240,10 +240,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="count"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public override Task<int> ReadAsync(byte[] buffer, int offset,
-            int count, CancellationToken ct) {
+            int count, CancellationToken cancellationToken) {
             if (buffer == null)
                 throw new ArgumentNullException(nameof(buffer));
             if (offset < 0)
@@ -253,8 +253,8 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             if (buffer.Length - offset < count)
                 throw new ArgumentException("invalid offset and length");
 
-            if (ct.IsCancellationRequested)
-                return Task.FromCanceled<int>(ct);
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled<int>(cancellationToken);
             if (IsClosed)
                 throw new IOException("Stream closed");
 
@@ -287,13 +287,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     if (completeSynchronously) {
                         _asyncRead.Release();
                     }
-                    else {
-                        // Release in async
-                    }
                 }
             }
             // Delegate to the async implementation.
-            return ReadAsync(buffer, offset + readByNow, count - readByNow, ct,
+            return ReadAsync(buffer, offset + readByNow, count - readByNow, cancellationToken,
                 readByNow, semaphoreLockTask);
         }
 
@@ -432,10 +429,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <param name="buffer"></param>
         /// <param name="offset"></param>
         /// <param name="count"></param>
-        /// <param name="ct"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public override Task WriteAsync(byte[] buffer, int offset, int count,
-            CancellationToken ct) {
+            CancellationToken cancellationToken) {
             if (buffer == null)
                 throw new ArgumentNullException(nameof(buffer));
             if (offset < 0)
@@ -444,8 +441,8 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 throw new ArgumentOutOfRangeException(nameof(count));
             if (buffer.Length - offset < count)
                 throw new ArgumentException("Invalid offset and length");
-            if (ct.IsCancellationRequested)
-                return Task.FromCanceled<int>(ct);
+            if (cancellationToken.IsCancellationRequested)
+                return Task.FromCanceled<int>(cancellationToken);
             if (IsClosed)
                 throw new IOException("Stream closed");
             // Do double checked locking and speed synchronized path...
@@ -468,12 +465,9 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     if (synchronous) {
                         _asyncWrite.Release();
                     }
-                    else {
-                        // Release in real async write below
-                    }
                 }
             }
-            return WriteAsync(buffer, offset, count, ct, semaphoreLockTask);
+            return WriteAsync(buffer, offset, count, cancellationToken, semaphoreLockTask);
         }
 
         /// <summary>

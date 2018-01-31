@@ -42,8 +42,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         public string HubName {
             get {
                 var idx = HostName.IndexOf('.');
-                if (idx == -1)
+                if (idx == -1) {
                     throw new InvalidDataContractException("No hub name");
+                }
+
                 return HostName.Substring(idx);
             }
         }
@@ -91,8 +93,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         private string this [Id id] {
             get {
                 string value;
-                if (!items.TryGetValue(id, out value))
+                if (!items.TryGetValue(id, out value)) {
                     return null;
+                }
+
                 return value;
             }
             set => items.Add(id, value);
@@ -153,13 +157,16 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="connectionString"></param>
         /// <returns></returns>
         public static ConnectionString Parse(string connectionString) {
-            if (connectionString == null)
+            if (connectionString == null) {
                 throw new ArgumentException("Connection string must be non null");
+            }
+
             var cs = ConnectionString.Create();
             foreach (var elem in connectionString.Split(';')) {
                 var i = elem.IndexOf("=", StringComparison.Ordinal);
-                if (i < 0)
+                if (i < 0) {
                     throw new InvalidDataContractException("Bad key value pair.");
+                }
                 // Throws argument if already exists or parse fails...
                 cs.items.Add((Id)Enum.Parse(typeof(Id), elem.Substring(0, i), true), elem.Substring(i + 1));
             }

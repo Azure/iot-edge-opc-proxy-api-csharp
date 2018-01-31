@@ -61,21 +61,18 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="provider"></param>
         /// <returns>The new proxy socket</returns>
         public static ProxySocket Create(SocketInfo info, IProvider provider) {
-            /**/ if (info.Protocol == ProtocolType.Tcp) {
+            /**/
+            if (info.Protocol == ProtocolType.Tcp) {
                 if (0 != (info.Flags & (uint)SocketFlags.Passive)) {
                     return new TCPServerSocket(info, provider);
                 }
-                else {
-                    return new TCPClientSocket(info, provider);
-                }
+                return new TCPClientSocket(info, provider);
             }
-            else if (info.Protocol == ProtocolType.Udp) {
+            if (info.Protocol == ProtocolType.Udp) {
                 if (0 != (info.Flags & (uint)SocketFlags.Passive)) {
                     return new UDPSocket(info, provider);
                 }
-                else {
-                    throw new ArgumentException("UDP sockets must be passive.");
-                }
+                throw new ArgumentException("UDP sockets must be passive.");
             }
             else {
                 throw new NotSupportedException("Only UDP and TCP supported right now.");

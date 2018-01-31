@@ -52,20 +52,26 @@ namespace Microsoft.Azure.Devices.Proxy {
         public static async Task Do(CancellationToken ct, Func<Task> work,
             Func<Exception, bool> cont, Func<int, int> policy, int maxRetry) {
             for (var k = 1; k <= maxRetry; k++) {
-                if (ct.IsCancellationRequested)
+                if (ct.IsCancellationRequested) {
                     throw new TaskCanceledException();
+                }
+
                 try {
                     await work().ConfigureAwait(false);
                     return;
                 }
                 catch (Exception ex) {
-                    if (!cont(ex))
+                    if (!cont(ex)) {
                         throw ProxyEventSource.Log.Rethrow(ex, work);
+                    }
+
                     ProxyEventSource.Log.Retry(work, k, ex);
                 }
                 var delay = policy(k);
-                if (delay == 0)
+                if (delay == 0) {
                     continue;
+                }
+
                 await Task.Delay(delay, ct).ConfigureAwait(false);
             }
             throw ProxyEventSource.Log.Timeout("Retry timeout exhausted.");
@@ -84,19 +90,25 @@ namespace Microsoft.Azure.Devices.Proxy {
         public static async Task<T> Do<T>(CancellationToken ct, Func<Task<T>> work,
             Func<Exception, bool> cont, Func<int, int> policy, int maxRetry) {
             for (var k = 1; k <= maxRetry; k++) {
-                if (ct.IsCancellationRequested)
+                if (ct.IsCancellationRequested) {
                     throw new TaskCanceledException();
+                }
+
                 try {
                     return await work().ConfigureAwait(false);
                 }
                 catch (Exception ex) {
-                    if (!cont(ex))
+                    if (!cont(ex)) {
                         throw ProxyEventSource.Log.Rethrow(ex, work);
+                    }
+
                     ProxyEventSource.Log.Retry(work, k, ex);
                 }
                 var delay = policy(k);
-                if (delay == 0)
+                if (delay == 0) {
                     continue;
+                }
+
                 await Task.Delay(delay, ct).ConfigureAwait(false);
             }
             throw ProxyEventSource.Log.Timeout("Retry timeout exhausted.");

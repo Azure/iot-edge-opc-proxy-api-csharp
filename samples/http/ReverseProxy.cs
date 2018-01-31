@@ -115,8 +115,9 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     // Read from stream the response back.
                     var target = await ReadAsync(stream,
                         context.Response, host, rewrite).ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(target))
+                    if (string.IsNullOrEmpty(target)) {
                         break;
+                    }
 
                     // Handle redirect to new target - 
                     Uri redirect;
@@ -125,12 +126,6 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                         if (redirect.IsAbsoluteUri) {
                             // if it is absolute, reconnect to the new host
                             host = redirect.Host;
-                        }
-                        else {
-                    //   // if target is relative, host is the same - see if we can reuse...
-                    //   if (context.Response.Headers["Connection"] == "keep-alive") {
-                    //       continue;
-                    //   }
                         }
                     }
                     stream.Dispose();
@@ -581,8 +576,10 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     while (true) {
                         var read = await _stream.ReadAsync(body, offset,
                             body.Length - offset).ConfigureAwait(false);
-                        if (read == 0)
+                        if (read == 0) {
                             break;
+                        }
+
                         offset += read;
                         if (offset == body.Length) {
                             // Grow
@@ -705,8 +702,10 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             try {
                 while (true) {
                     var read = stream.Read(body, offset, body.Length - offset);
-                    if (read == 0)
+                    if (read == 0) {
                         break;
+                    }
+
                     offset += read;
                     if (offset == body.Length) {
                         // Grow

@@ -1,7 +1,7 @@
-/// ------------------------------------------------------------
-///  Copyright (c) Microsoft Corporation.  All rights reserved.
-///  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
-/// ------------------------------------------------------------
+// ------------------------------------------------------------
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
+// ------------------------------------------------------------
 
 namespace Microsoft.Azure.Devices.Proxy {
     using System;
@@ -15,8 +15,8 @@ namespace Microsoft.Azure.Devices.Proxy {
     /// </summary>
     public class NetworkStream : Stream {
 
-        private volatile bool _cleanedUp = false;
-        private bool _ownsSocket = false;
+        private volatile bool _cleanedUp;
+        private bool _ownsSocket;
 
         /// <summary>
         /// Create stream with socket, and declare socket ownership
@@ -107,7 +107,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         public virtual bool DataAvailable {
             get {
                 if (_cleanedUp) {
-                    throw new ObjectDisposedException(this.GetType().FullName);
+                    throw new ObjectDisposedException(GetType().FullName);
                 }
 
                 var chkStreamSocket = Socket;
@@ -127,31 +127,29 @@ namespace Microsoft.Azure.Devices.Proxy {
                 if (!_cleanedUp && socket != null && socket.Connected) {
                     return true;
                 }
-                else {
-                    return false;
-                }
+                return false;
             }
         }
 
         /// <summary>
         /// Read - provide core Read functionality.
         /// </summary>
-        public override int Read([In, Out] byte[] buffer, int offset, int size) {
+        public override int Read([In, Out] byte[] buffer, int offset, int count) {
             var canRead = CanRead;  // Prevent race with Dispose.
             if (_cleanedUp) {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
             if (!canRead) {
                 throw new InvalidOperationException("Cannot read on writeonly stream");
             }
             if (buffer == null) {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
             if (offset < 0 || offset >= buffer.Length) {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
-            if (size < 0 || size > buffer.Length - offset) {
-                throw new ArgumentOutOfRangeException("size");
+            if (count < 0 || count > buffer.Length - offset) {
+                throw new ArgumentOutOfRangeException(nameof(count));
             }
 
             var chkStreamSocket = Socket;
@@ -159,7 +157,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new IOException("connection closed");
             }
             try {
-                var bytesTransferred = chkStreamSocket.Receive(buffer, offset, size);
+                var bytesTransferred = chkStreamSocket.Receive(buffer, offset, count);
                 return bytesTransferred;
             }
             catch (Exception exception) {
@@ -173,22 +171,22 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Write - provide core Write functionality.
         /// </summary>
-        public override void Write(byte[] buffer, int offset, int size) {
+        public override void Write(byte[] buffer, int offset, int count) {
             var canWrite = CanWrite; // Prevent race with Dispose.
             if (_cleanedUp) {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
             if (!canWrite) {
                 throw new InvalidOperationException("Cannot write on readonly stream");
             }
             if (buffer == null) {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
             if (offset < 0 || offset >= buffer.Length) {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
-            if (size < 0 || size > buffer.Length - offset) {
-                throw new ArgumentOutOfRangeException("size");
+            if (count < 0 || count > buffer.Length - offset) {
+                throw new ArgumentOutOfRangeException(nameof(count));
             }
 
             var chkStreamSocket = Socket;
@@ -196,7 +194,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new IOException("connection closed");
             }
             try {
-                chkStreamSocket.Send(buffer, offset, size);
+                chkStreamSocket.Send(buffer, offset, count);
             }
             catch (Exception exception) {
                 if (exception is OutOfMemoryException) {
@@ -219,13 +217,13 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new InvalidOperationException("Cannot read on writeonly stream");
             }
             if (buffer == null) {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
             if (offset < 0 || offset >= buffer.Length) {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
             if (size < 0 || size > buffer.Length - offset) {
-                throw new ArgumentOutOfRangeException("size");
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
 
             Socket chkStreamSocket = Socket;
@@ -253,7 +251,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
             if (asyncResult == null) {
-                throw new ArgumentNullException("asyncResult");
+                throw new ArgumentNullException(nameof(asyncResult));
             }
 
             Socket chkStreamSocket = Socket;
@@ -275,34 +273,38 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// ReadAsync - provide async read functionality.
         /// </summary>
-        public override Task<int> ReadAsync(byte[] buffer, int offset, int size, CancellationToken ct) {
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) {
             var canRead = CanRead;  // Prevent race with Dispose.
             if (_cleanedUp) {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
             if (!canRead) {
                 throw new InvalidOperationException("Cannot read on writeonly stream");
             }
             if (buffer == null) {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
             if (offset < 0 || offset >= buffer.Length) {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
-            if (size < 0 || size > buffer.Length - offset) {
-                throw new ArgumentOutOfRangeException("size");
+            if (count < 0 || count > buffer.Length - offset) {
+                throw new ArgumentOutOfRangeException(nameof(count));
             }
 
             var chkStreamSocket = Socket;
             if (chkStreamSocket == null) {
                 throw new IOException("connection closed");
             }
-            return chkStreamSocket.ReceiveAsync(buffer, offset, size, ct).ContinueWith(t => {
-                if (t.IsFaulted) {
-                    throw new IOException("Failed to receive", t.Exception);
+
+            try {
+                return await chkStreamSocket.ReceiveAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exception) {
+                if (exception is OutOfMemoryException) {
+                    throw;
                 }
-                return t.Result;
-            });
+                throw new IOException("Failed to receive", exception);
+            }
         }
 
         /// <summary>
@@ -324,13 +326,13 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new InvalidOperationException("Cannot write on readonly stream");
             }
             if (buffer == null) {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
             if (offset < 0 || offset >= buffer.Length) {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
             if (size < 0 || size > buffer.Length - offset) {
-                throw new ArgumentOutOfRangeException("size");
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
 
             Socket chkStreamSocket = Socket;
@@ -360,7 +362,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new ObjectDisposedException(this.GetType().FullName);
             }
             if (asyncResult == null) {
-                throw new ArgumentNullException("asyncResult");
+                throw new ArgumentNullException(nameof(asyncResult));
             }
 
             Socket chkStreamSocket = Socket;
@@ -382,34 +384,38 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// WriteAsync - provide async write functionality.
         /// </summary>
-        public override Task WriteAsync(byte[] buffer, int offset, int size, CancellationToken ct) {
+        public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) {
             var canWrite = CanWrite; // Prevent race with Dispose.
             if (_cleanedUp) {
-                throw new ObjectDisposedException(this.GetType().FullName);
+                throw new ObjectDisposedException(GetType().FullName);
             }
             if (!canWrite) {
                 throw new InvalidOperationException("Cannot write on readonly stream");
             }
             if (buffer == null) {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
             if (offset < 0 || offset >= buffer.Length) {
-                throw new ArgumentOutOfRangeException("offset");
+                throw new ArgumentOutOfRangeException(nameof(offset));
             }
-            if (size < 0 || size > buffer.Length - offset) {
-                throw new ArgumentOutOfRangeException("size");
+            if (count < 0 || count > buffer.Length - offset) {
+                throw new ArgumentOutOfRangeException(nameof(count));
             }
 
             var chkStreamSocket = Socket;
             if (chkStreamSocket == null) {
                 throw new IOException("connection closed");
             }
-            return chkStreamSocket.SendAsync(buffer, offset, size, ct).ContinueWith(t => {
-                if (t.IsFaulted) {
-                    throw new IOException("Failed to send", t.Exception);
+
+            try {
+                await chkStreamSocket.SendAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exception) {
+                if (exception is OutOfMemoryException) {
+                    throw;
                 }
-                return t;
-            });
+                throw new IOException("Failed to send", exception);
+            }
         }
 
         /// <summary>

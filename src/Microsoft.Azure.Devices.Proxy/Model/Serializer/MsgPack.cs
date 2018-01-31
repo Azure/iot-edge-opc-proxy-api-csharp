@@ -146,43 +146,56 @@ namespace Microsoft.Azure.Devices.Proxy {
 
             await writer.WriteAsync(obj.TypeId, ct).ConfigureAwait(false);
 
-            /**/ if (obj.Content is DataMessage)
+            /**/ if (obj.Content is DataMessage) {
                 await context.Get<DataMessage>().WriteAsync(writer,
                     (DataMessage)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is PollRequest)
+            }
+            else if (obj.Content is PollRequest) {
                 await context.Get<PollRequest>().WriteAsync(writer,
                     (PollRequest)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is PingRequest)
+            }
+            else if (obj.Content is PingRequest) {
                 await context.Get<PingRequest>().WriteAsync(writer,
                     (PingRequest)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is PingResponse)
+            }
+            else if (obj.Content is PingResponse) {
                 await context.Get<PingResponse>().WriteAsync(writer,
                     (PingResponse)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is LinkRequest)
+            }
+            else if (obj.Content is LinkRequest) {
                 await context.Get<LinkRequest>().WriteAsync(writer,
                     (LinkRequest)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is LinkResponse)
+            }
+            else if (obj.Content is LinkResponse) {
                 await context.Get<LinkResponse>().WriteAsync(writer,
                     (LinkResponse)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is SetOptRequest)
+            }
+            else if (obj.Content is SetOptRequest) {
                 await context.Get<SetOptRequest>().WriteAsync(writer,
                     (SetOptRequest)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is GetOptRequest)
+            }
+            else if (obj.Content is GetOptRequest) {
                 await context.Get<GetOptRequest>().WriteAsync(writer,
                     (GetOptRequest)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is GetOptResponse)
+            }
+            else if (obj.Content is GetOptResponse) {
                 await context.Get<GetOptResponse>().WriteAsync(writer,
                     (GetOptResponse)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is OpenRequest)
+            }
+            else if (obj.Content is OpenRequest) {
                 await context.Get<OpenRequest>().WriteAsync(writer,
                     (OpenRequest)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is CloseResponse)
+            }
+            else if (obj.Content is CloseResponse) {
                 await context.Get<CloseResponse>().WriteAsync(writer,
                     (CloseResponse)obj.Content, context, ct).ConfigureAwait(false);
-            else if (obj.Content is IVoidMessage)
+            }
+            else if (obj.Content is IVoidMessage) {
                 await writer.WriteNilAsync(ct).ConfigureAwait(false);
-            else
+            }
+            else {
                 throw new FormatException("Bad type in content");
+            }
         }
     }
 
@@ -345,23 +358,21 @@ namespace Microsoft.Azure.Devices.Proxy {
                 family != AddressFamily.InterNetworkV6) {
                 throw new FormatException($"Bad address family {family}");
             }
+            var interfaceIndex = await reader.ReadInt32Async(ct).ConfigureAwait(false);
+            var address = await reader.ReadBinAsync(ct).ConfigureAwait(false);
+            if (family == AddressFamily.InterNetwork) {
+                if (address.Length != 4) {
+                    throw new FormatException(
+                        $"Bad v4 address size {address.Length}");
+                }
+                result = Inet4MulticastOption.Create(interfaceIndex, address);
+            }
             else {
-                var interfaceIndex = await reader.ReadInt32Async(ct).ConfigureAwait(false);
-                var address = await reader.ReadBinAsync(ct).ConfigureAwait(false);
-                if (family == AddressFamily.InterNetwork) {
-                    if (address.Length != 4) {
-                        throw new FormatException(
-                            $"Bad v4 address size {address.Length}");
-                    }
-                    result = Inet4MulticastOption.Create(interfaceIndex, address);
+                if (address.Length != 16) {
+                    throw new FormatException(
+                        $"Bad v6 address size {address.Length}");
                 }
-                else {
-                    if (address.Length != 16) {
-                        throw new FormatException(
-                            $"Bad v6 address size {address.Length}");
-                    }
-                    result = Inet6MulticastOption.Create(interfaceIndex, address);
-                }
+                result = Inet6MulticastOption.Create(interfaceIndex, address);
             }
             return result;
         }

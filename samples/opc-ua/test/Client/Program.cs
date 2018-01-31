@@ -299,8 +299,9 @@ Operations (Mutually exclusive):
                                 $"{browsed.Item2.DisplayName}, {browsed.Item2.BrowseName}, {browsed.Item2.NodeClass}");
                         }
                         Console.WriteLine($"   ....        took {w.ElapsedMilliseconds} ms...");
-                        if (++j <= count)
+                        if (++j <= count) {
                             break;
+                        }
 
                         // Reconnect
                         session.Close();

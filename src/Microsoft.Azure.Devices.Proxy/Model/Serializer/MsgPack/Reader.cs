@@ -127,9 +127,7 @@ namespace MsgPack {
                         throw new FormatException(
                             "Expected a length header for object header");
                     }
-                    else {
-                        continue;
-                    }
+                    continue;
                 }
                 fields = (int)Value;
                 if (fields == 0) {
@@ -137,9 +135,7 @@ namespace MsgPack {
                         throw new FormatException(
                             "0 sized array is not an object");
                     }
-                    else {
-                        continue;
-                    }
+                    continue;
                 }
                 // Read null member value
                 await ReadAsync(ct).ConfigureAwait(false);
@@ -147,7 +143,7 @@ namespace MsgPack {
                 if (IsNil) {
                     break; // Done...
                 }
-                else if (_strict) {
+                if (_strict) {
                     throw new FormatException(
                         "Missing nil field in object header.");
                 }

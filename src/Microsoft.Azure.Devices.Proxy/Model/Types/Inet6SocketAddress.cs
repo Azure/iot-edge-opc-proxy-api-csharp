@@ -142,22 +142,20 @@ namespace Microsoft.Azure.Devices.Proxy {
                 // This is actually a proxy reference id
                 return AsReference().ToString();
             }
-            else {
-                var str = new StringBuilder();
-                if (Port != 0) {
-                    str.Append("[");
-                }
-                str.Append(AsString());
-                if (ScopeId != 0) {
-                    str.Append("/");
-                    str.Append(ScopeId);
-                }
-                if (Port != 0) {
-                    str.Append("]:");
-                    str.Append(Port);
-                }
-                return str.ToString();
+            var str = new StringBuilder();
+            if (Port != 0) {
+                str.Append("[");
             }
+            str.Append(AsString());
+            if (ScopeId != 0) {
+                str.Append("/");
+                str.Append(ScopeId);
+            }
+            if (Port != 0) {
+                str.Append("]:");
+                str.Append(Port);
+            }
+            return str.ToString();
         }
 
         public override ProxySocketAddress AsProxySocketAddress() =>

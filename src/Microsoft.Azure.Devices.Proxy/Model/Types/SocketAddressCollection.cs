@@ -38,15 +38,15 @@ namespace Microsoft.Azure.Devices.Proxy {
             var set = new HashSet<SocketAddress>(addresses);
             if (!set.Any()) {
                 return null;
-            } else {
-                var address = new SocketAddressCollection {
-                    Inner = set
-                };
-                try {
-                    return address.Addresses().Single();
-                } catch {
-                    return address;
-                }
+            }
+            var address = new SocketAddressCollection {
+                Inner = set
+            };
+            try {
+                return address.Addresses().Single();
+            }
+            catch {
+                return address;
             }
         }
 

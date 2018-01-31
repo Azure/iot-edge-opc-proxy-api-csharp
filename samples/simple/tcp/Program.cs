@@ -255,8 +255,10 @@ Operations (Mutually exclusive):
                 s.Connect(hostName, port);
                 Console.Out.WriteLine($"Send: Connected to {s.RemoteEndPoint} on {s.InterfaceEndPoint} via {s.LocalEndPoint}!");
                 Console.Out.WriteLine("Send: Sending sync ...");
-                for (var i = 0; i < iterations; i++)
+                for (var i = 0; i < iterations; i++) {
                     s.Send(buffer);
+                }
+
                 s.Close();
             }
         }

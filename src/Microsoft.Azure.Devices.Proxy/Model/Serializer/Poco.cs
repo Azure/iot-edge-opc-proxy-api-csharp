@@ -117,7 +117,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (ziss == null) {
                 return (zat == null);
             }
-            else if (zat != null) {
+            if (zat != null) {
                 if (ziss.GetHashCode() == zat.GetHashCode() &&
                     ziss.IsEqual(zat)) {
                     return true;
@@ -137,7 +137,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (ziss == null) {
                 return (zat == null);
             }
-            else if (zat != null) {
+            if (zat != null) {
                 if (ziss.GetHashCode() == zat.GetHashCode() &&
                     ziss.Equals(zat)) {
                     return true;
@@ -157,7 +157,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (ziss == null) {
                 return (zat == null);
             }
-            else if (zat != null) {
+            if (zat != null) {
                 using (var zatEnumerator = zat.GetEnumerator()) {
                     foreach (var item in ziss) {
                         if (!zatEnumerator.MoveNext() ||
@@ -165,7 +165,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                             return false;
                         }
                     }
-                    if( !zatEnumerator.MoveNext()) {
+                    if (!zatEnumerator.MoveNext()) {
                         return true;
                     }
                 }
@@ -184,8 +184,8 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (ziss == null) {
                 return (zat == null);
             }
-            else if (zat != null && ziss.Length == zat.Length) {
-                for(var i = 0; i < zat.Length; i++) {
+            if (zat != null && ziss.Length == zat.Length) {
+                for (var i = 0; i < zat.Length; i++) {
                     if (!IsEqual(ziss[i], zat[i])) {
                         return false;
                     }

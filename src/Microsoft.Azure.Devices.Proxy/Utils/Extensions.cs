@@ -65,7 +65,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (ex is T) {
                 return (T)ex;
             }
-            else if (ex is AggregateException) {
+            if (ex is AggregateException) {
                 var ae = ((AggregateException)ex).Flatten();
                 foreach (var e in ae.InnerExceptions) {
                     var found = GetFirstOf<T>(e);

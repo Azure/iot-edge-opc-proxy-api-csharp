@@ -144,38 +144,63 @@ namespace MsgPack {
                 type = nullable;
             }
 
-            /**/ if (type == typeof(string)) {
+            /**/
+            if (type == typeof(string)) {
                 return await reader.ReadStringAsync(ct).ConfigureAwait(false);
             }
-            else if (type == typeof(byte[])) {
+            if (type == typeof(byte[])) {
                 return await reader.ReadBinAsync(ct).ConfigureAwait(false);
             }
 
             else if (type.GetTypeInfo().IsPrimitive) {
-                if (type == typeof(bool))
+                if (type == typeof(bool)) {
                     return await reader.ReadBoolAsync(ct).ConfigureAwait(false);
-                if (type == typeof(uint))
+                }
+
+                if (type == typeof(uint)) {
                     return await reader.ReadUInt32Async(ct).ConfigureAwait(false);
-                if (type == typeof(int))
+                }
+
+                if (type == typeof(int)) {
                     return await reader.ReadInt32Async(ct).ConfigureAwait(false);
-                if (type == typeof(byte))
+                }
+
+                if (type == typeof(byte)) {
                     return await reader.ReadUInt8Async(ct).ConfigureAwait(false);
-                if (type == typeof(char))
+                }
+
+                if (type == typeof(char)) {
                     return await reader.ReadCharAsync(ct).ConfigureAwait(false);
-                if (type == typeof(ulong))
+                }
+
+                if (type == typeof(ulong)) {
                     return await reader.ReadUInt64Async(ct).ConfigureAwait(false);
-                if (type == typeof(long))
+                }
+
+                if (type == typeof(long)) {
                     return await reader.ReadInt64Async(ct).ConfigureAwait(false);
-                if (type == typeof(sbyte))
+                }
+
+                if (type == typeof(sbyte)) {
                     return await reader.ReadInt8Async(ct).ConfigureAwait(false);
-                if (type == typeof(ushort))
+                }
+
+                if (type == typeof(ushort)) {
                     return await reader.ReadUInt16Async(ct).ConfigureAwait(false);
-                if (type == typeof(short))
+                }
+
+                if (type == typeof(short)) {
                     return await reader.ReadInt16Async(ct).ConfigureAwait(false);
-                if (type == typeof(double))
+                }
+
+                if (type == typeof(double)) {
                     return await reader.ReadDoubleAsync(ct).ConfigureAwait(false);
-                if (type == typeof(float))
+                }
+
+                if (type == typeof(float)) {
                     return await reader.ReadFloatAsync(ct).ConfigureAwait(false);
+                }
+
                 throw new FormatException($"Type {type} is primitive, but cannot read.");
             }
 
@@ -206,9 +231,7 @@ namespace MsgPack {
                     // Would need to add type encoding
 #endif
                 }
-                else {
-                    itemType = type.GetGenericArguments()[0];
-                }
+                itemType = type.GetGenericArguments()[0];
                 var len = await reader.ReadArrayLengthAsync(ct).ConfigureAwait(false);
                 for (var i = 0; i < len; i++) {
                     var o = await ReadAsync(
@@ -229,10 +252,8 @@ namespace MsgPack {
                     // Would need to add type encoding
 #endif
                 }
-                else {
-                    keyType = type.GetGenericArguments()[0];
-                    valueType = type.GetGenericArguments()[1];
-                }
+                keyType = type.GetGenericArguments()[0];
+                valueType = type.GetGenericArguments()[1];
 
                 var len = await reader.ReadMapLengthAsync(ct).ConfigureAwait(false);
                 for (var i = 0; i < len; i++) {
@@ -330,16 +351,14 @@ namespace MsgPack {
                     }
 #endif
                 }
-                else {
-                    var keyType = map.GetType().GetGenericArguments()[0];
-                    var valueType = map.GetType().GetGenericArguments()[1];
-                    var enumerator = map.GetEnumerator();
-                    while (enumerator.MoveNext()) {
-                        await WriteAsync(writer, enumerator.Key,
-                            keyType, context, ct).ConfigureAwait(false);
-                        await WriteAsync(writer, enumerator.Value,
-                            valueType, context, ct).ConfigureAwait(false);
-                    }
+                var keyType = map.GetType().GetGenericArguments()[0];
+                var valueType = map.GetType().GetGenericArguments()[1];
+                var enumerator = map.GetEnumerator();
+                while (enumerator.MoveNext()) {
+                    await WriteAsync(writer, enumerator.Key,
+                        keyType, context, ct).ConfigureAwait(false);
+                    await WriteAsync(writer, enumerator.Value,
+                        valueType, context, ct).ConfigureAwait(false);
                 }
             }
 
@@ -373,12 +392,10 @@ namespace MsgPack {
                 }
 #endif
             }
-            else {
-                var generic = enumerable.GetType().GetGenericArguments()[0];
-                foreach (var item in enumerable) {
-                    await WriteAsync(writer,
-                        item, generic, context, ct).ConfigureAwait(false);
-                }
+            var generic = enumerable.GetType().GetGenericArguments()[0];
+            foreach (var item in enumerable) {
+                await WriteAsync(writer,
+                    item, generic, context, ct).ConfigureAwait(false);
             }
         }
 

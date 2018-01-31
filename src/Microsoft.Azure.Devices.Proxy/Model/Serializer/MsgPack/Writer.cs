@@ -58,7 +58,7 @@ namespace MsgPack {
             if (val >= 0) {
                 return WriteAsync((byte)val, ct);
             }
-            else if (val >= -32) {
+            if (val >= -32) {
                 _buffer[0] = (byte)((byte)Types.NegativeFixNum | (byte)val);
                 return _strm.WriteAsync(_buffer, 0, 1, ct);
             }
@@ -79,7 +79,7 @@ namespace MsgPack {
             if (val >= 0) {
                 return WriteAsync((ushort)val, ct);
             }
-            else if (val >= sbyte.MinValue) {
+            if (val >= sbyte.MinValue) {
                 return WriteAsync((sbyte)val, ct);
             }
             else {
@@ -106,7 +106,7 @@ namespace MsgPack {
             if (val >= 0) {
                 return WriteAsync((uint)val, ct);
             }
-            else if (val >= short.MinValue) {
+            if (val >= short.MinValue) {
                 return WriteAsync((short)val, ct);
             }
             else {
@@ -140,30 +140,28 @@ namespace MsgPack {
             if (val >= int.MinValue) {
                 return WriteAsync((int)val, ct);
             }
-            else {
-                _buffer[0] = (byte)Types.Int64;
-                if (BitConverter.IsLittleEndian) {
-                    _buffer[1] = (byte)(val >> 56);
-                    _buffer[2] = (byte)(val >> 48);
-                    _buffer[3] = (byte)(val >> 40);
-                    _buffer[4] = (byte)(val >> 32);
-                    _buffer[5] = (byte)(val >> 24);
-                    _buffer[6] = (byte)(val >> 16);
-                    _buffer[7] = (byte)(val >> 8);
-                    _buffer[8] = (byte)(val);
-                }
-                else {
-                    _buffer[8] = (byte)(val >> 56);
-                    _buffer[7] = (byte)(val >> 48);
-                    _buffer[6] = (byte)(val >> 40);
-                    _buffer[5] = (byte)(val >> 32);
-                    _buffer[4] = (byte)(val >> 24);
-                    _buffer[3] = (byte)(val >> 16);
-                    _buffer[2] = (byte)(val >> 8);
-                    _buffer[1] = (byte)(val);
-                }
-                return _strm.WriteAsync(_buffer, 0, 9, ct);
+            _buffer[0] = (byte)Types.Int64;
+            if (BitConverter.IsLittleEndian) {
+                _buffer[1] = (byte)(val >> 56);
+                _buffer[2] = (byte)(val >> 48);
+                _buffer[3] = (byte)(val >> 40);
+                _buffer[4] = (byte)(val >> 32);
+                _buffer[5] = (byte)(val >> 24);
+                _buffer[6] = (byte)(val >> 16);
+                _buffer[7] = (byte)(val >> 8);
+                _buffer[8] = (byte)(val);
             }
+            else {
+                _buffer[8] = (byte)(val >> 56);
+                _buffer[7] = (byte)(val >> 48);
+                _buffer[6] = (byte)(val >> 40);
+                _buffer[5] = (byte)(val >> 32);
+                _buffer[4] = (byte)(val >> 24);
+                _buffer[3] = (byte)(val >> 16);
+                _buffer[2] = (byte)(val >> 8);
+                _buffer[1] = (byte)(val);
+            }
+            return _strm.WriteAsync(_buffer, 0, 9, ct);
         }
 
         /// <summary>
@@ -177,11 +175,9 @@ namespace MsgPack {
                 _buffer[0] = val;
                 return _strm.WriteAsync(_buffer, 0, 1, ct);
             }
-            else {
-                _buffer[0] = (byte)Types.Uint8;
-                _buffer[1] = val;
-                return _strm.WriteAsync(_buffer, 0, 2, ct);
-            }
+            _buffer[0] = (byte)Types.Uint8;
+            _buffer[1] = val;
+            return _strm.WriteAsync(_buffer, 0, 2, ct);
         }
 
         /// <summary>
@@ -194,18 +190,16 @@ namespace MsgPack {
             if (val <= byte.MaxValue) {
                 return WriteAsync((byte)val, ct);
             }
-            else {
-                _buffer[0] = (byte)Types.UInt16;
-                if (BitConverter.IsLittleEndian) {
-                    _buffer[1] = (byte)(val >> 8);
-                    _buffer[2] = (byte)(val);
-                }
-                else {
-                    _buffer[2] = (byte)(val >> 8);
-                    _buffer[1] = (byte)(val);
-                }
-                return _strm.WriteAsync(_buffer, 0, 3, ct);
+            _buffer[0] = (byte)Types.UInt16;
+            if (BitConverter.IsLittleEndian) {
+                _buffer[1] = (byte)(val >> 8);
+                _buffer[2] = (byte)(val);
             }
+            else {
+                _buffer[2] = (byte)(val >> 8);
+                _buffer[1] = (byte)(val);
+            }
+            return _strm.WriteAsync(_buffer, 0, 3, ct);
         }
 
         /// <summary>
@@ -227,22 +221,20 @@ namespace MsgPack {
             if (val <= ushort.MaxValue) {
                 return WriteAsync((ushort)val, ct);
             }
-            else {
-                _buffer[0] = (byte)Types.UInt32;
-                if (BitConverter.IsLittleEndian) {
-                    _buffer[1] = (byte)(val >> 24);
-                    _buffer[2] = (byte)(val >> 16);
-                    _buffer[3] = (byte)(val >> 8);
-                    _buffer[4] = (byte)val;
-                }
-                else {
-                    _buffer[4] = (byte)(val >> 24);
-                    _buffer[3] = (byte)(val >> 16);
-                    _buffer[2] = (byte)(val >> 8);
-                    _buffer[1] = (byte)val;
-                }
-                return _strm.WriteAsync(_buffer, 0, 5, ct);
+            _buffer[0] = (byte)Types.UInt32;
+            if (BitConverter.IsLittleEndian) {
+                _buffer[1] = (byte)(val >> 24);
+                _buffer[2] = (byte)(val >> 16);
+                _buffer[3] = (byte)(val >> 8);
+                _buffer[4] = (byte)val;
             }
+            else {
+                _buffer[4] = (byte)(val >> 24);
+                _buffer[3] = (byte)(val >> 16);
+                _buffer[2] = (byte)(val >> 8);
+                _buffer[1] = (byte)val;
+            }
+            return _strm.WriteAsync(_buffer, 0, 5, ct);
         }
 
         /// <summary>
@@ -255,30 +247,28 @@ namespace MsgPack {
             if (val <= uint.MaxValue) {
                 return WriteAsync((uint)val, ct);
             }
-            else {
-                _buffer[0] = (byte)Types.UInt64;
-                if (BitConverter.IsLittleEndian) {
-                    _buffer[1] = (byte)(val >> 56);
-                    _buffer[2] = (byte)(val >> 48);
-                    _buffer[3] = (byte)(val >> 40);
-                    _buffer[4] = (byte)(val >> 32);
-                    _buffer[5] = (byte)(val >> 24);
-                    _buffer[6] = (byte)(val >> 16);
-                    _buffer[7] = (byte)(val >> 8);
-                    _buffer[8] = (byte)val;
-                }
-                else {
-                    _buffer[8] = (byte)(val >> 56);
-                    _buffer[7] = (byte)(val >> 48);
-                    _buffer[6] = (byte)(val >> 40);
-                    _buffer[5] = (byte)(val >> 32);
-                    _buffer[4] = (byte)(val >> 24);
-                    _buffer[3] = (byte)(val >> 16);
-                    _buffer[2] = (byte)(val >> 8);
-                    _buffer[1] = (byte)val;
-                }
-                return _strm.WriteAsync(_buffer, 0, 9, ct);
+            _buffer[0] = (byte)Types.UInt64;
+            if (BitConverter.IsLittleEndian) {
+                _buffer[1] = (byte)(val >> 56);
+                _buffer[2] = (byte)(val >> 48);
+                _buffer[3] = (byte)(val >> 40);
+                _buffer[4] = (byte)(val >> 32);
+                _buffer[5] = (byte)(val >> 24);
+                _buffer[6] = (byte)(val >> 16);
+                _buffer[7] = (byte)(val >> 8);
+                _buffer[8] = (byte)val;
             }
+            else {
+                _buffer[8] = (byte)(val >> 56);
+                _buffer[7] = (byte)(val >> 48);
+                _buffer[6] = (byte)(val >> 40);
+                _buffer[5] = (byte)(val >> 32);
+                _buffer[4] = (byte)(val >> 24);
+                _buffer[3] = (byte)(val >> 16);
+                _buffer[2] = (byte)(val >> 8);
+                _buffer[1] = (byte)val;
+            }
+            return _strm.WriteAsync(_buffer, 0, 9, ct);
         }
 
         /// <summary>
@@ -350,7 +340,7 @@ namespace MsgPack {
                 _buffer[1] = (byte)size;
                 return _strm.WriteAsync(_buffer, 0, 2, ct);
             }
-            else if (size <= ushort.MaxValue) {
+            if (size <= ushort.MaxValue) {
                 _buffer[0] = (byte)Types.Bin16;
                 if (BitConverter.IsLittleEndian) {
                     _buffer[1] = (byte)(size >> 8);
@@ -402,7 +392,7 @@ namespace MsgPack {
                 _buffer[0] = (byte)((byte)Types.FixArray | (byte)size);
                 return _strm.WriteAsync(_buffer, 0, 1, ct);
             }
-            else if (size <= ushort.MaxValue) {
+            if (size <= ushort.MaxValue) {
                 _buffer[0] = (byte)Types.Array16;
                 if (BitConverter.IsLittleEndian) {
                     _buffer[1] = (byte)(size >> 8);
@@ -443,7 +433,7 @@ namespace MsgPack {
                 _buffer[0] = (byte)((byte)Types.FixMap | (byte)size);
                 return _strm.WriteAsync(_buffer, 0, 1, ct);
             }
-            else if (size <= ushort.MaxValue) {
+            if (size <= ushort.MaxValue) {
                 _buffer[0] = (byte)Types.Map16;
                 if (BitConverter.IsLittleEndian) {
                     _buffer[1] = (byte)(size >> 8);
@@ -496,7 +486,7 @@ namespace MsgPack {
                 _buffer[0] = (byte)((byte)Types.FixStr | (byte)size);
                 return _strm.WriteAsync(_buffer, 0, 1, ct);
             }
-            else if (size <= byte.MaxValue) {
+            if (size <= byte.MaxValue) {
                 _buffer[0] = (byte)Types.Str8;
                 _buffer[1] = (byte)size;
                 return _strm.WriteAsync(_buffer, 0, 2, ct);
@@ -553,8 +543,10 @@ namespace MsgPack {
                 encoder.Convert(chars, offset, len, _buffer, 0, _buffer.Length, false,
                     out encoded, out copied, out done);
                 await _strm.WriteAsync(_buffer, 0, copied, ct).ConfigureAwait(false);
-                if (done)
+                if (done) {
                     break;
+                }
+
                 len -= encoded;
                 offset += encoded;
             }

@@ -67,7 +67,7 @@ namespace System.Threading.Tasks.Dataflow {
             public override string ToString() => _source.ToString();
 
             public TOutput ConsumeMessage(DataflowMessageHeader messageHeader,
-                ITargetBlock<TOutput> target, out Boolean messageConsumed) =>
+                ITargetBlock<TOutput> target, out bool messageConsumed) =>
                 _source.ConsumeMessage(messageHeader, target, out messageConsumed);
 
             public bool ReserveMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target) =>

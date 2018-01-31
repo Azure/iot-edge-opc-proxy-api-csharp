@@ -193,8 +193,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="ct"></param>
         /// <returns></returns>
         public async Task<bool> TryCompleteOpenAsync(CancellationToken ct) {
-            if (_connection == null)
+            if (_connection == null) {
                 return false;
+            }
+
             try {
                 var stream = await _connection.OpenAsync(ct).ConfigureAwait(false);
 

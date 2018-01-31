@@ -134,8 +134,10 @@ namespace Microsoft.Azure.Devices.Proxy {
             Func<HttpRequestHeaders, Task> addHeaders, Action<HttpStatusCode, HttpResponseHeaders> queryHeaders,
             CancellationToken ct, string payload = null, string contentType = null) {
             using (var msg = new HttpRequestMessage(method, uri)) {
-                if (addHeaders != null)
+                if (addHeaders != null) {
                     await addHeaders(msg.Headers).ConfigureAwait(false);
+                }
+
                 if (contentType == null) {
                     if (payload != null) {
                         msg.Content = new StringContent(payload);

@@ -222,7 +222,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         internal async Task<IoTHubRecord> AddRecordAsync(INameRecord record,
             CancellationToken ct) {
             try {
-                await _http.CallAsync(CreateUri("/devices/" + record.Id.ToLowerInvariant()), Http.Put,
+                await _http.CallAsync(CreateUri("/devices/" + record.Id), Http.Put,
                     async h => {
                         h.Add(HttpRequestHeader.Authorization.ToString(),
                             await IoTHubService.GetSasTokenAsync(_hubConnectionString,
@@ -262,7 +262,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             CancellationToken ct) {
             try {
                 var stream = await _http.StreamAsync(
-                    CreateUri("/twins/" + record.Id.ToLowerInvariant()), Http.Get,
+                    CreateUri("/twins/" + record.Id), Http.Get,
                     async h => {
                         h.Add(HttpRequestHeader.Authorization.ToString(),
                             await IoTHubService.GetSasTokenAsync(_hubConnectionString,
@@ -299,7 +299,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             CancellationToken ct) {
             try {
                 await _http.CallAsync(
-                    CreateUri("/devices/" + record.Id.ToLowerInvariant()), Http.Delete,
+                    CreateUri("/devices/" + record.Id), Http.Delete,
                     async h => {
                         h.Add(HttpRequestHeader.Authorization.ToString(),
                             await IoTHubService.GetSasTokenAsync(_hubConnectionString,
@@ -353,7 +353,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             ProxyEventSource.Log.PatchingRecord(this, record, json);
             try {
                 var stream = await _http.StreamAsync(
-                    CreateUri("/twins/" + hubRecord.Id.ToLowerInvariant()), Http.Patch,
+                    CreateUri("/twins/" + hubRecord.Id), Http.Patch,
                     async h => {
                         h.Add(HttpRequestHeader.Authorization.ToString(),
                             await IoTHubService.GetSasTokenAsync(_hubConnectionString,
@@ -393,7 +393,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             CancellationToken ct) {
             try {
                 var stream = await _http.StreamAsync(
-                    CreateUri("/devices/" + record.Id.ToLowerInvariant()), Http.Get,
+                    CreateUri("/devices/" + record.Id), Http.Get,
                     async h => {
                         h.Add(HttpRequestHeader.Authorization.ToString(),
                             await IoTHubService.GetSasTokenAsync(_hubConnectionString,
@@ -503,7 +503,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             // Done loading all proxies and hosts
             _registryLoaded.SetResult(true);
 
-            var reloadTimeout = TimeSpan.FromSeconds(100);
+            var reloadTimeout = TimeSpan.FromMinutes(5);
             while (!_open.IsCancellationRequested) {
 
                 // Update status for each item

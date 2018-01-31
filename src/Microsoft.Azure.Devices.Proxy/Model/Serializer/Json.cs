@@ -99,8 +99,10 @@ namespace Microsoft.Azure.Devices.Proxy {
 
                 // TODO: Create empty
 
-                if (reader.TokenType != JsonToken.Null)
+                if (reader.TokenType != JsonToken.Null) {
                     serializer.Populate(reader, content);
+                }
+
                 return content;
             }
             public override object ReadJson(JsonReader reader, Type objectType,
@@ -137,10 +139,12 @@ namespace Microsoft.Azure.Devices.Proxy {
                             reader.Value.ToString().Equals("id",
                                 StringComparison.CurrentCultureIgnoreCase)) {
                             reader.Read();
-                            if (reader.TokenType == JsonToken.String)
+                            if (reader.TokenType == JsonToken.String) {
                                 address = Reference.Parse(reader.Value.ToString());
-                            else
+                            }
+                            else {
                                 throw new InvalidDataContractException();
+                            }
                         }
                     } while (reader.TokenType != JsonToken.EndObject);
                 }
@@ -231,7 +235,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                     return Property<IMulticastOption>.Create(type,
                         jsonObject.GetValue("property").ToObject<IMulticastOption>(serializer));
                 }
-                else if (type == (uint)PropertyType.FileInfo) {
+                if (type == (uint)PropertyType.FileInfo) {
                     return Property<FileInfo>.Create(type,
                         jsonObject.GetValue("property").ToObject<FileInfo>(serializer));
                 }
