@@ -24,21 +24,12 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// We assume that the framing portion for a data message is consistently 2kb.
         /// Assuming a 1/4 increase for base 64, this would mean something like 4-5k.
         /// </summary>
-        public uint MaxBufferSize {
-#if !SUPPORT_MSG_OVER_8K
-            // TODO: Remove this when > 88 k messages are supported
-            get => 5000;
-#else
-            get => 0;
-#endif
-        }
+        public uint MaxBufferSize => 5000;
 
         /// <summary>
         /// Always polled
         /// </summary>
-        public bool IsPolled {
-            get => true;
-        }
+        public bool IsPolled => true;
 
         /// <summary>
         /// Connection string for connection - for proxy to use
@@ -50,16 +41,12 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Block to send to
         /// </summary>
-        public ITargetBlock<Message> SendBlock {
-            get => _send;
-        }
+        public ITargetBlock<Message> SendBlock => _send;
 
         /// <summary>
         /// Block to receive from
         /// </summary>
-        public ISourceBlock<Message> ReceiveBlock {
-            get => _receive;
-        }
+        public ISourceBlock<Message> ReceiveBlock => _receive;
 
         /// <summary>
         /// Constructor creating a method based polled stream.

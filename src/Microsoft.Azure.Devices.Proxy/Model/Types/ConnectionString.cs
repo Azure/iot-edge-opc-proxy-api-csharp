@@ -41,7 +41,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// </summary>
         public string HubName {
             get {
-                int idx = HostName.IndexOf('.');
+                var idx = HostName.IndexOf('.');
                 if (idx == -1)
                     throw new InvalidDataContractException("No hub name");
                 return HostName.Substring(idx);
@@ -51,51 +51,37 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Get host name from connection string
         /// </summary>
-        public string HostName {
-            get => this[Id.HostName];
-        }
+        public string HostName => this[Id.HostName];
 
         /// <summary>
         /// Get device id
         /// </summary>
-        public string DeviceId {
-            get => this[Id.DeviceId];
-        }
+        public string DeviceId => this[Id.DeviceId];
 
         /// <summary>
         /// Get shared access key name
         /// </summary>
-        public string SharedAccessKeyName {
-            get => this[Id.SharedAccessKeyName];
-        }
+        public string SharedAccessKeyName => this[Id.SharedAccessKeyName];
 
         /// <summary>
         /// Get shared access key
         /// </summary>
-        public string SharedAccessKey {
-            get => this[Id.SharedAccessKey];
-        }
+        public string SharedAccessKey => this[Id.SharedAccessKey];
 
         /// <summary>
         /// Get shared access key
         /// </summary>
-        public string SharedAccessToken {
-            get => this[Id.SharedAccessToken];
-        }
+        public string SharedAccessToken => this[Id.SharedAccessToken];
 
         /// <summary>
         /// Get Endpoint address
         /// </summary>
-        public Uri Endpoint {
-            get => new Uri(this[Id.Endpoint]);
-        }
+        public Uri Endpoint => new Uri(this[Id.Endpoint]);
 
         /// <summary>
         /// Get Endpoint address
         /// </summary>
-        public string Entity {
-            get => this[Id.Entity];
-        }
+        public string Entity => this[Id.Entity];
 
         /// <summary>
         /// Indexer
@@ -171,7 +157,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new ArgumentException("Connection string must be non null");
             var cs = ConnectionString.Create();
             foreach (var elem in connectionString.Split(';')) {
-                int i = elem.IndexOf("=", StringComparison.Ordinal);
+                var i = elem.IndexOf("=", StringComparison.Ordinal);
                 if (i < 0)
                     throw new InvalidDataContractException("Bad key value pair.");
                 // Throws argument if already exists or parse fails...

@@ -4,11 +4,6 @@
 // ------------------------------------------------------------
 
 namespace Microsoft.Azure.Devices.Proxy {
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-
     /// <summary>
     /// Concrete implementation for Lookup and Sending
     /// </summary>

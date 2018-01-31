@@ -97,8 +97,8 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             // Connect a proxy socket to http endpoint
 
             TcpClient client = null;
-            string host = uri.Host;
-            string res = uri.PathAndQuery;
+            var host = uri.Host;
+            var res = uri.PathAndQuery;
             Stream stream = null;
             try {
                 while (true) {
@@ -239,7 +239,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 foreach (var kv in request.Headers) {
                     if (kv.Key.Equals("Accept-Encoding",
                         StringComparison.CurrentCultureIgnoreCase)) {
-                        string filtered = "";
+                        var filtered = "";
                         foreach (var enc in kv.Value.ToString().Split(',')) {
                             var val = enc.ToLowerInvariant().Trim();
                             if (val.Equals("gzip") ||
@@ -284,7 +284,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             // Now read response back and write out to response
             var reader = new HttpResponseReader(stream);
 
-            bool isChunked = false;
+            var isChunked = false;
             string contentEncoding = null;
             var headers = new HeaderDictionary();
 
@@ -296,7 +296,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             }
             Console.WriteLine(s);
 
-            int statusCode = int.Parse(s.Split(' ')[1]);
+            var statusCode = int.Parse(s.Split(' ')[1]);
             string target = null;
             while (true) {
                 s = await reader.ReadLineAsync().ConfigureAwait(false);
@@ -481,7 +481,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             }
             subtype = subtype.Trim();
 
-            bool isText = toplevel.Equals("text");
+            var isText = toplevel.Equals("text");
             if (!isText) {
                 if (toplevel.Equals("application") &&
                     (subtype.Equals("json") ||
@@ -523,7 +523,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             /// <returns></returns>
             internal async Task<string> ReadLineAsync() {
                 var buf = new byte[1024];
-                int offset = 0;
+                var offset = 0;
                 while(true) {
                     var read = await _stream.ReadAsync(buf, offset, 1).ConfigureAwait(false);
                     if (read != 1) {
@@ -576,10 +576,10 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 Func<byte[], int, byte[]> filter) {
                 // Try to read as much as possible
                 var body = new byte[1024];
-                int offset = 0;
+                var offset = 0;
                 try {
                     while (true) {
-                        int read = await _stream.ReadAsync(body, offset,
+                        var read = await _stream.ReadAsync(body, offset,
                             body.Length - offset).ConfigureAwait(false);
                         if (read == 0)
                             break;
@@ -663,7 +663,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             private async Task<byte[]> ReadBodyAsync(int contentLength,
                 Func<byte[], int, byte[]> filter) {
                 var buf = new byte[contentLength];
-                int offset = 0;
+                var offset = 0;
                 while (offset < buf.Length) {
                     offset += await _stream.ReadAsync(buf, offset,
                         buf.Length - offset).ConfigureAwait(false);
@@ -701,10 +701,10 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
         public static string ToString(this Stream stream, Encoding encoder) {
             // Try to read as much as possible
             var body = new byte[1024];
-            int offset = 0;
+            var offset = 0;
             try {
                 while (true) {
-                    int read = stream.Read(body, offset, body.Length - offset);
+                    var read = stream.Read(body, offset, body.Length - offset);
                     if (read == 0)
                         break;
                     offset += read;

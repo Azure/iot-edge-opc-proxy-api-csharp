@@ -64,13 +64,9 @@ namespace Opc.Ua.Bindings.Proxy {
             m_args.SetBuffer(buffer, offset, count);
         }
 
-        public bool IsSocketError {
-            get { return m_args.SocketError != SocketError.Success; }
-        }
+        public bool IsSocketError => m_args.SocketError != SocketError.Success;
 
-        public string SocketErrorString {
-            get { return m_args.SocketError.ToString(); }
-        }
+        public string SocketErrorString => m_args.SocketError.ToString();
 
 
         public event EventHandler<IMessageSocketAsyncEventArgs> Completed {
@@ -89,13 +85,9 @@ namespace Opc.Ua.Bindings.Proxy {
             m_internalComplete(this, e.UserToken as IMessageSocketAsyncEventArgs);
         }
 
-        public int BytesTransferred {
-            get { return m_args.BytesTransferred; }
-        }
+        public int BytesTransferred => m_args.BytesTransferred;
 
-        public byte[] Buffer {
-            get { return m_args.Buffer; }
-        }
+        public byte[] Buffer => m_args.Buffer;
 
         public BufferCollection BufferList {
             get { return m_args.BufferList as BufferCollection; }
@@ -127,7 +119,7 @@ namespace Opc.Ua.Bindings.Proxy {
         /// Gets the implementation description.
         /// </summary>
         /// <value>The implementation string.</value>
-        public string Implementation { get { return "UA-Proxy"; } }
+        public string Implementation => "UA-Proxy";
     }
 
     /// <summary>
@@ -225,7 +217,7 @@ namespace Opc.Ua.Bindings.Proxy {
         /// Connects to an endpoint.
         /// </summary>
         public async Task<bool> BeginConnect(Uri endpointUrl, EventHandler<IMessageSocketAsyncEventArgs> callback, object state) {
-            bool result = false;
+            var result = false;
 
             if (endpointUrl == null) throw new ArgumentNullException(nameof(endpointUrl));
 
@@ -233,7 +225,7 @@ namespace Opc.Ua.Bindings.Proxy {
                 throw new InvalidOperationException("The socket is already connected.");
             }
 
-            ProxyMessageSocketAsyncEventArgs args = new ProxyMessageSocketAsyncEventArgs();
+            var args = new ProxyMessageSocketAsyncEventArgs();
             args.UserToken = state;
             args.m_args.SocketError = SocketError.HostUnknown;
 
@@ -245,13 +237,13 @@ namespace Opc.Ua.Bindings.Proxy {
                 result = true;
             }
             catch (Exception e) {
-                SocketException se = e as SocketException;
+                var se = e as SocketException;
                 if (se != null) {
                     args.m_args.SocketError = se.Error;
                 }
             }
             finally {
-                Task t = Task.Run(() => callback(this, args));
+                var t = Task.Run(() => callback(this, args));
             }
             return result;
         }
@@ -334,7 +326,7 @@ namespace Opc.Ua.Bindings.Proxy {
         /// </summary>
         private ServiceResult DoReadComplete(SocketAsyncEventArgs e) {
             // complete operation.
-            int bytesRead = e.BytesTransferred;
+            var bytesRead = e.BytesTransferred;
 
             lock (m_socketLock) {
                 BufferManager.UnlockBuffer(m_receiveBuffer);
@@ -394,7 +386,7 @@ namespace Opc.Ua.Bindings.Proxy {
             if (m_sink != null) {
                 try {
                     // send notification (implementor responsible for freeing buffer) on success.
-                    ArraySegment<byte> messageChunk = new ArraySegment<byte>(m_receiveBuffer, 0, m_incomingMessageSize);
+                    var messageChunk = new ArraySegment<byte>(m_receiveBuffer, 0, m_incomingMessageSize);
 
                     // must allocate a new buffer for the next message.
                     m_receiveBuffer = null;
@@ -446,8 +438,8 @@ namespace Opc.Ua.Bindings.Proxy {
 
             BufferManager.LockBuffer(m_receiveBuffer);
 
-            ServiceResult error = ServiceResult.Good;
-            SocketAsyncEventArgs args = new SocketAsyncEventArgs();
+            var error = ServiceResult.Good;
+            var args = new SocketAsyncEventArgs();
             try {
                 args.SetBuffer(m_receiveBuffer, m_bytesReceived, m_bytesToReceive - m_bytesReceived);
                 args.Completed += m_ReadComplete;
@@ -477,7 +469,7 @@ namespace Opc.Ua.Bindings.Proxy {
         /// Sends a buffer.
         /// </summary>
         public bool SendAsync(IMessageSocketAsyncEventArgs args) {
-            ProxyMessageSocketAsyncEventArgs eventArgs = args as ProxyMessageSocketAsyncEventArgs;
+            var eventArgs = args as ProxyMessageSocketAsyncEventArgs;
             if (eventArgs == null) {
                 throw new ArgumentNullException(nameof(args));
             }

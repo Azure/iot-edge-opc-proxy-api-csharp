@@ -34,15 +34,15 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Select the proxy to bind to
         /// </summary>
-        /// <param name="endpoint"></param>
+        /// <param name="address"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        public override Task BindAsync(SocketAddress endpoint, CancellationToken ct) {
+        public override Task BindAsync(SocketAddress address, CancellationToken ct) {
             if (_boundEndpoint != null) {
                 throw new SocketException(
                     "Cannot double bind already bound socket. Use collection address.");
             }
-            _boundEndpoint = endpoint ?? throw new ArgumentNullException(nameof(endpoint));
+            _boundEndpoint = address ?? throw new ArgumentNullException(nameof(address));
 
             while (_boundEndpoint.Family == AddressFamily.Bound) {
                 // Unwrap bound address

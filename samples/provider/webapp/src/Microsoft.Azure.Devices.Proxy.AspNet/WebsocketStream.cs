@@ -22,17 +22,11 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Returns whether the stream is closed
         /// </summary>
-        public bool IsClosed {
-            get { return _websocket == null || _websocket.CloseStatus != null; }
-        }
+        public bool IsClosed => _websocket == null || _websocket.CloseStatus != null;
 
-        public override bool CanRead {
-            get { return !IsClosed; }
-        }
+        public override bool CanRead => !IsClosed;
 
-        public override bool CanWrite {
-            get { return !IsClosed; }
-        }
+        public override bool CanWrite => !IsClosed;
 
         /// <summary>
         /// Reading length is not supported
@@ -197,7 +191,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             if (IsClosed)
                 throw new IOException("Stream closed");
 
-            int readByNow = ReadBuffer(buffer, offset, count);
+            var readByNow = ReadBuffer(buffer, offset, count);
             if (readByNow == count)
                 return readByNow;
             else if (_readEnd) {
@@ -264,11 +258,11 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             if (IsClosed)
                 throw new IOException("Stream closed");
 
-            int readByNow = 0;
+            var readByNow = 0;
             // lock to avoid race with other async tasks
-            Task semaphoreLockTask = _asyncRead.WaitAsync();
+            var semaphoreLockTask = _asyncRead.WaitAsync();
             if (semaphoreLockTask.Status == TaskStatus.RanToCompletion) {
-                bool completeSynchronously = true;
+                var completeSynchronously = true;
                 try {
                     Exception ex;
                     readByNow = TryReadBuffer(buffer, offset, count, out ex);
@@ -279,7 +273,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                             // Speed up sync reads by caching last read task
                             // if it has the same value as previous read task
                             //
-                            Task<int> t = _lastRead;
+                            var t = _lastRead;
                             if (t != null && t.Result == readByNow)
                                 return t;
                             t = Task.FromResult(readByNow);
@@ -319,7 +313,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             await lockTask.ConfigureAwait(false);
             try {
                 // Check buffer - might have been filled while parked
-                int read = ReadBuffer(array, offset, count);
+                var read = ReadBuffer(array, offset, count);
                 if (read == count) {
                     return readByNow + read;
                 }
@@ -356,7 +350,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <param name="count"></param>
         /// <returns></returns>
         private int ReadBuffer(byte[] array, int offset, int count) {
-            int readbytes = _readLen - _readPos;
+            var readbytes = _readLen - _readPos;
             if (readbytes == 0)
                 return 0;
             if (readbytes > count)
@@ -455,9 +449,9 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             if (IsClosed)
                 throw new IOException("Stream closed");
             // Do double checked locking and speed synchronized path...
-            Task semaphoreLockTask = _asyncWrite.WaitAsync();
+            var semaphoreLockTask = _asyncWrite.WaitAsync();
             if (semaphoreLockTask.Status == TaskStatus.RanToCompletion) {
-                bool synchronous = true;
+                var synchronous = true;
                 try {
                     // If the write completely fits into the buffer complete here
                     synchronous = (count < (_bufferSize - _writePos));
@@ -519,7 +513,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <param name="offset"></param>
         /// <param name="count"></param>
         private void WriteBuffer(byte[] array, ref int offset, ref int count) {
-            int bytesToWrite = Math.Min(_bufferSize - _writePos, count);
+            var bytesToWrite = Math.Min(_bufferSize - _writePos, count);
             if (bytesToWrite <= 0)
                 return;
             Buffer.BlockCopy(array, offset, _writebuffer, _writePos, bytesToWrite);

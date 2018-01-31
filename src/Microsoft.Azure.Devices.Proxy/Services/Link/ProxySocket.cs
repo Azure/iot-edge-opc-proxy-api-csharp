@@ -7,7 +7,6 @@ namespace Microsoft.Azure.Devices.Proxy {
     using System;
     using System.Linq;
     using System.Collections.Generic;
-    using System.Collections.Concurrent;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
@@ -141,7 +140,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                                 proxy, openRequest, TimeSpan.MaxValue, ct).ConfigureAwait(false);
 
                             // Wait until remote side opens stream connection
-                            bool success = await link.TryCompleteOpenAsync(ct).ConfigureAwait(false);
+                            var success = await link.TryCompleteOpenAsync(ct).ConfigureAwait(false);
                             if (success) {
                                 ProxyEventSource.Log.LinkComplete(this, proxy.Name, Info.Address);
                                 input.Dispose();
@@ -200,7 +199,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             async (input) => {
                 var record = input.Arg;
                 Message response = null;
-                Message request = Message.Create(Id, Reference.Null, PingRequest.Create(address));
+                var request = Message.Create(Id, Reference.Null, PingRequest.Create(address));
                 try {
                     // Increase timeout up to max timeout based on number of exceptions
                     var pingTimeout = TimeSpan.FromSeconds(timeoutInSeconds * (input.FaultCount + 1));
@@ -365,7 +364,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (response == null) {
                 throw new SocketException(SocketError.Fatal);
             }
-            SocketError errorCode = (SocketError)response.Error;
+            var errorCode = (SocketError)response.Error;
             if (errorCode != SocketError.Success &&
                 errorCode != SocketError.Timeout) {
                 throw new SocketException(errorCode);

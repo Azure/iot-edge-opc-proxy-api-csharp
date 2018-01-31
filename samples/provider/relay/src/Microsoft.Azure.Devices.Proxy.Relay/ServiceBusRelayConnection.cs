@@ -35,7 +35,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns></returns>
         public override void Close() {
             // Remove ourselves from the listener...
-            _relay._connectionMap.TryRemove(StreamId, out ServiceBusRelayConnection stream);
+            _relay._connectionMap.TryRemove(StreamId, out var stream);
         }
 
         /// <summary>

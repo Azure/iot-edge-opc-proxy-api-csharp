@@ -78,9 +78,9 @@ options:
 
             var prog = new Program();
             try {
-                for (int index = 0; index < args.Length; index++) {
+                for (var index = 0; index < args.Length; index++) {
                     int tmp;
-                    string opt = args[index];
+                    var opt = args[index];
                     if (string.IsNullOrEmpty(args[index])) {
                         continue;
                     }
@@ -88,10 +88,10 @@ options:
                         if (opt.Length == 1) {
                             throw new ArgumentException($"Unknown option {opt}.");
                         }
-                        char optc = opt[1];
+                        var optc = opt[1];
                         if (optc == '-' && opt[0] != '/') {
                             // Parse -- long option
-                            string optl = opt.Substring(2);
+                            var optl = opt.Substring(2);
                             switch (optl) {
                                 case "help":
                                 case "source":
@@ -286,7 +286,7 @@ options:
         /// </summary>
         public async Task StdAsync(CancellationToken ct) {
 
-            foreach (int port in Ports) {
+            foreach (var port in Ports) {
                 using (var client = new TcpClient()) {
                     if (Timeout.HasValue) {
                         client.Socket.ConnectTimeout = TimeSpan.FromMilliseconds(Timeout.Value);
@@ -322,7 +322,7 @@ options:
                         await Task.WhenAny(tasks.ToArray());
 
                         cts.Cancel();
-                        foreach (Task t in tasks) {
+                        foreach (var t in tasks) {
                             if (!t.IsCompleted) {
                                 await t;
                             }

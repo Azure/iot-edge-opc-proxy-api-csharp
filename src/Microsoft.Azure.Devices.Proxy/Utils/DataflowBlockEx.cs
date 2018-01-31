@@ -59,7 +59,7 @@ namespace System.Threading.Tasks.Dataflow {
                 TInput messageValue, ISourceBlock<TInput> source, bool consumeToAccept) =>
                 _target.OfferMessage(messageHeader, messageValue, source, consumeToAccept);
 
-            public Task Completion { get => _source.Completion; }
+            public Task Completion => _source.Completion;
 
             public IDisposable LinkTo(ITargetBlock<TOutput> target, DataflowLinkOptions linkOptions) =>
                 _source.LinkTo(target, linkOptions);

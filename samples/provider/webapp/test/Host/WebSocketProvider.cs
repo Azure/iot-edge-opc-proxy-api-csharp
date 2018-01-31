@@ -4,10 +4,8 @@
 
 namespace Microsoft.Azure.Devices.Proxy.Provider {
     using System.IO;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Configuration;
     using Microsoft.AspNetCore.Hosting;
-    using Proxy;
     using System;
 
     /// <summary>

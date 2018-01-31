@@ -8,7 +8,6 @@ namespace Microsoft.Azure.Devices.Proxy {
     using System.IO;
     using System.Threading.Tasks;
     using System.Threading;
-    using Newtonsoft.Json;
 
     public static class Serializable {
 

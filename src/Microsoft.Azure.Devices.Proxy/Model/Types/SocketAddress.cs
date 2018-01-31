@@ -6,7 +6,6 @@
 // Keep in sync with native layer, in particular order of members!
 
 namespace Microsoft.Azure.Devices.Proxy {
-    using System;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -19,9 +18,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// Address family
         /// </summary>
         [DataMember(Name = "family", Order = 1)]
-        public virtual AddressFamily Family {
-            get => AddressFamily.Unspecified;
-        }
+        public virtual AddressFamily Family => AddressFamily.Unspecified;
 
         /// <summary>
         /// Comparison
@@ -43,10 +40,10 @@ namespace Microsoft.Azure.Devices.Proxy {
             /**/ if (string.IsNullOrEmpty(address)) {
                 parsed = new AnySocketAddress();
             }
-            else if (InetSocketAddress.TryParse(address, out InetSocketAddress inet)) {
+            else if (InetSocketAddress.TryParse(address, out var inet)) {
                 parsed = inet;
             }
-            else if (ProxySocketAddress.TryParse(address, out ProxySocketAddress proxy)) {
+            else if (ProxySocketAddress.TryParse(address, out var proxy)) {
                 parsed = proxy;
             }
             else {

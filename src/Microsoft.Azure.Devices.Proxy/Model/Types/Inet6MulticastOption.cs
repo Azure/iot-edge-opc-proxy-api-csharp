@@ -6,8 +6,6 @@
 // Keep in sync with native layer, in particular order of members!
 
 namespace Microsoft.Azure.Devices.Proxy {
-    using System;
-    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -17,9 +15,7 @@ namespace Microsoft.Azure.Devices.Proxy {
     public class Inet6MulticastOption : Poco<Inet6MulticastOption>, IMulticastOption {
 
         [DataMember(Name = "family", Order = 1)]
-        public AddressFamily Family {
-            get => AddressFamily.InterNetworkV6;
-        }
+        public AddressFamily Family => AddressFamily.InterNetworkV6;
 
         /// <summary>
         /// Interface to use

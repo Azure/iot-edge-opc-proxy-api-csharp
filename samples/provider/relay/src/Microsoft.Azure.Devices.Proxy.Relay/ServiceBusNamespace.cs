@@ -129,7 +129,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         private static string GetKeyFromResponseXml(string response) {
             var document = new XmlDocument();
             document.Load(new StringReader(response));
-            XmlNamespaceManager manager = new XmlNamespaceManager(document.NameTable);
+            var manager = new XmlNamespaceManager(document.NameTable);
             manager.AddNamespace("ns", "http://schemas.microsoft.com/netservices/2010/10/servicebus/connect");
             var node = document.SelectSingleNode("//ns:PrimaryKey", manager);
             if (node == null)
@@ -143,7 +143,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <param name="validityPeriodInSeconds"></param>
         /// <returns></returns>
         private async Task<string> GetSasTokenAsync(int validityPeriodInSeconds) {
-            string baseAddress = new UriBuilder("https", _connectionString.Endpoint.DnsSafeHost).Uri.ToString();
+            var baseAddress = new UriBuilder("https", _connectionString.Endpoint.DnsSafeHost).Uri.ToString();
             var token = await _tokenProvider.GetTokenAsync(baseAddress, new TimeSpan(0, 0, validityPeriodInSeconds));
             return token.TokenString;
         }

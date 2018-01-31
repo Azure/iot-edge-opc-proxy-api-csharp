@@ -141,7 +141,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                     dataStream.Dispose();
                 }
 
-                Socket chkClientSocket = Socket;
+                var chkClientSocket = Socket;
                 Socket = null;
                 if (chkClientSocket != null) {
                     chkClientSocket.Dispose();

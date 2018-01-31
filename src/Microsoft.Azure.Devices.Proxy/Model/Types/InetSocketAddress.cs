@@ -56,10 +56,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="parsed"></param>
         /// <returns></returns>
         public static bool TryParse(string address, out InetSocketAddress parsed) {
-            if (Inet4SocketAddress.TryParse(address, out Inet4SocketAddress inet4)) {
+            if (Inet4SocketAddress.TryParse(address, out var inet4)) {
                 parsed = inet4;
             }
-            else if (Inet6SocketAddress.TryParse(address, out Inet6SocketAddress inet6)) {
+            else if (Inet6SocketAddress.TryParse(address, out var inet6)) {
                 parsed = inet6;
             }
             else {

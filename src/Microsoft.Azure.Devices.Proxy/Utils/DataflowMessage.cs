@@ -18,13 +18,9 @@ namespace System.Threading.Tasks.Dataflow {
 
         internal void Reset() => _exceptions.Clear();
 
-        public Exception LastFault {
-            get => _exceptions.Peek();
-        }
+        public Exception LastFault => _exceptions.Peek();
 
-        public int FaultCount {
-            get => _exceptions.Count;
-        }
+        public int FaultCount => _exceptions.Count;
 
         internal void OnFault(Exception exception)  => _exceptions.Push(exception);
 

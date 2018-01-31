@@ -31,40 +31,30 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Returns an address representing the proxy address(s)
         /// </summary>
-        public override SocketAddress ProxyAddress {
-            get => SocketAddressCollection.Create(
+        public override SocketAddress ProxyAddress => SocketAddressCollection.Create(
                 Links.Values.Where(l => l.ProxyAddress != null).Select(l => l.ProxyAddress));
-        }
 
         /// <summary>
         /// Returns an address representing the address(es) bound on proxy
         /// </summary>
-        public override SocketAddress LocalAddress {
-            get => SocketAddressCollection.Create(
+        public override SocketAddress LocalAddress => SocketAddressCollection.Create(
                 Links.Values.Where(l => l.LocalAddress != null).Select(l => l.LocalAddress));
-        }
 
         /// <summary>
         /// Returns an address representing the peer(s) of all links.
         /// </summary>
-        public override SocketAddress PeerAddress {
-            get => SocketAddressCollection.Create(
+        public override SocketAddress PeerAddress => SocketAddressCollection.Create(
                 Links.Values.Where(l => l.PeerAddress != null).Select(l => l.PeerAddress));
-        }
 
         /// <summary>
         /// Send block
         /// </summary>
-        public override ITargetBlock<Message> SendBlock {
-            get => _send;
-        }
+        public override ITargetBlock<Message> SendBlock => _send;
 
         /// <summary>
         /// Receive block
         /// </summary>
-        public override ISourceBlock<Message> ReceiveBlock {
-            get => _receive;
-        }
+        public override ISourceBlock<Message> ReceiveBlock => _receive;
 
         /// <summary>
         /// An underlying link
@@ -173,7 +163,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             while (tasks.Count > 0) {
                 var result = await Task.WhenAny(tasks).ConfigureAwait(false);
                 try {
-                    ulong value = await result.ConfigureAwait(false);
+                    var value = await result.ConfigureAwait(false);
                     cts.Cancel(); // Cancel the rest
                     return value;
                 }
@@ -290,7 +280,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 if (ev.Item2 == NameServiceEvent.Disconnected ||
                     ev.Item2 == NameServiceEvent.Removed) {
                     lock (Links) {
-                        if (Links.TryGetValue(ev.Item1.Address, out BroadcastLink link)) {
+                        if (Links.TryGetValue(ev.Item1.Address, out var link)) {
                             OnRemove(link);
                         }
                     }

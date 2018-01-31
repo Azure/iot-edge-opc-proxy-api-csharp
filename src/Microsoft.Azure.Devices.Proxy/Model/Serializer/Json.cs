@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Devices.Proxy {
 
         protected override JsonProperty CreateProperty(MemberInfo member,
             MemberSerialization memberSerialization) {
-            JsonProperty property = base.CreateProperty(member, memberSerialization);
+            var property = base.CreateProperty(member, memberSerialization);
 
             var dataMember = member.GetCustomAttribute<DataMemberAttribute>();
             property.ShouldSerialize = (i) => {
@@ -30,7 +30,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         protected override JsonContract CreateContract(Type objectType) {
-            JsonContract contract = base.CreateContract(objectType);
+            var contract = base.CreateContract(objectType);
             /**/ if (typeof(Reference).IsAssignableFrom(objectType)) {
                 contract.Converter = new ReferenceConverter();
             }
@@ -87,9 +87,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 JsonSerializer serializer) {
                 throw new NotImplementedException();
             }
-            public override bool CanWrite {
-                get { return false; }
-            }
+            public override bool CanWrite => false;
         }
 
         class MessageContentConverter : JsonConverter {
@@ -114,9 +112,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
                 throw new NotImplementedException();
             }
-            public override bool CanWrite {
-                get { return false; }
-            }
+            public override bool CanWrite => false;
         }
 
         class VoidConverter : MessageContentConverter {
@@ -124,9 +120,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 object value, JsonSerializer serializer) {
                 writer.WriteNull();
             }
-            public override bool CanWrite {
-                get { return true; }
-            }
+            public override bool CanWrite => true;
         }
 
         class ReferenceConverter : JsonConverter {
@@ -174,8 +168,8 @@ namespace Microsoft.Azure.Devices.Proxy {
 
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
-                JObject jsonObject = JObject.Load(reader);
-                AddressFamily family = (AddressFamily)jsonObject.Value<int>("family");
+                var jsonObject = JObject.Load(reader);
+                var family = (AddressFamily)jsonObject.Value<int>("family");
                 switch(family) {
                     case AddressFamily.Unspecified:
                         return new AnySocketAddress();
@@ -195,9 +189,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 JsonSerializer serializer) {
                 throw new NotImplementedException();
             }
-            public override bool CanWrite {
-                get { return false; }
-            }
+            public override bool CanWrite => false;
         }
 
         class MulticastOptionConverter : JsonConverter {
@@ -222,9 +214,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 JsonSerializer serializer) {
                 throw new NotImplementedException();
             }
-            public override bool CanWrite {
-                get { return false; }
-            }
+            public override bool CanWrite => false;
         }
 
         class PropertyConverter : JsonConverter {
@@ -234,8 +224,8 @@ namespace Microsoft.Azure.Devices.Proxy {
 
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
-                JObject jsonObject = JObject.Load(reader);
-                uint type = jsonObject.Value<uint>("type");
+                var jsonObject = JObject.Load(reader);
+                var type = jsonObject.Value<uint>("type");
                 if (type == (uint)SocketOption.IpMulticastJoin ||
                     type == (uint)SocketOption.IpMulticastLeave) {
                     return Property<IMulticastOption>.Create(type,
@@ -253,10 +243,6 @@ namespace Microsoft.Azure.Devices.Proxy {
                     return Property<InterfaceInfo>.Create(type,
                         jsonObject.GetValue("property").ToObject<InterfaceInfo>(serializer));
                 }
-                else if (type >= (uint)DnsRecordType.Simple &&
-                         type < (uint)DnsRecordType.__prx_record_max) {
-                    return jsonObject.ToObject<Property<byte[]>>();
-                }
                 else if (type < (uint)SocketOption.__prx_so_max) {
                     return jsonObject.ToObject<Property<ulong>>();
                 }
@@ -268,9 +254,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 JsonSerializer serializer) {
                 throw new NotImplementedException();
             }
-            public override bool CanWrite {
-                get { return false; }
-            }
+            public override bool CanWrite => false;
         }
     }
 }

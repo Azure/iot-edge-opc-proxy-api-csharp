@@ -4,8 +4,6 @@
 // ------------------------------------------------------------
 
 namespace Microsoft.Azure.Devices.Proxy {
-
-    using System;
     using System.Threading;
     using System.Threading.Tasks;
 

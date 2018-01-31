@@ -31,11 +31,11 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Select the proxy to bind to
         /// </summary>
-        /// <param name="endpoint"></param>
+        /// <param name="address"></param>
         /// <param name="ct"></param>
         /// <returns></returns>
-        public override Task BindAsync(SocketAddress endpoint, CancellationToken ct) =>
-            LinkAsync(endpoint, ct);
+        public override Task BindAsync(SocketAddress address, CancellationToken ct) =>
+            LinkAsync(address, ct);
 
         /// <summary>
         /// Send buffer
@@ -63,7 +63,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             try {
                 message = await ReceiveBlock.ReceiveAsync(ct).ConfigureAwait(false);
                 var data = message.Content as DataMessage;
-                int copy = Math.Min(data.Payload.Length, buffer.Count);
+                var copy = Math.Min(data.Payload.Length, buffer.Count);
                 Buffer.BlockCopy(data.Payload, 0, buffer.Array, buffer.Offset, copy);
                 return new ProxyAsyncResult {
                     Address = data.Source,

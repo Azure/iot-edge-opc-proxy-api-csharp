@@ -202,7 +202,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     @"{""query"":""" + sql + @"""}", "application/json").ConfigureAwait(false);
 
                 using (stream)
-                using (StreamReader sr = new StreamReader(stream))
+                using (var sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr)) {
                     var results = JToken.ReadFrom(reader);
                     return Tuple.Create(continuation, results.Select(j => new IoTHubRecord((JObject)j)));
@@ -275,7 +275,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     }, ct).ConfigureAwait(false);
 
                 using (stream)
-                using (StreamReader sr = new StreamReader(stream))
+                using (var sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr)) {
                     return new IoTHubRecord((JObject)JToken.ReadFrom(reader));
                 }
@@ -367,7 +367,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                         }
                     }, ct, json, "application/json").ConfigureAwait(false);
                 using (stream)
-                using (StreamReader sr = new StreamReader(stream))
+                using (var sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr)) {
                     hubRecord = new IoTHubRecord(new IoTHubRecord((JObject)JToken.ReadFrom(reader)));
                 }
@@ -406,7 +406,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     }, ct).ConfigureAwait(false);
 
                 using (stream)
-                using (StreamReader sr = new StreamReader(stream))
+                using (var sr = new StreamReader(stream))
                 using (JsonReader reader = new JsonTextReader(sr)) {
                     var response = (JObject)JToken.ReadFrom(reader);
 
@@ -448,7 +448,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns></returns>
         private static string CreateQueryString(NameRecordType type, bool filterAlive = false) {
             var sql = new StringBuilder("SELECT * FROM devices WHERE ");
-            bool concat = false;
+            var concat = false;
 
             // No support for bit queries ...
             if (0 != (type & NameRecordType.Proxy)) {
@@ -546,7 +546,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     }
                     else {
                         await RemoveRecordAsync(item.Item1, _open.Token).ConfigureAwait(false);
-                        if (_cache.TryRemove(item.Item1.Address, out IoTHubRecord removed)) {
+                        if (_cache.TryRemove(item.Item1.Address, out var removed)) {
                             await NotifyChanges(removed, NameServiceEvent.Removed);
                         }
                     }
@@ -572,7 +572,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     // First remove all items not retrieved now
                     foreach(var item in _cache.Values) {
                         if (!cache.ContainsKey(item.Address) &&
-                            _cache.TryRemove(item.Address, out IoTHubRecord removed)) {
+                            _cache.TryRemove(item.Address, out var removed)) {
                             await NotifyChanges(removed, NameServiceEvent.Removed);
                         }
                     }
@@ -630,10 +630,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             int validityPeriodInSeconds) {
             // http://msdn.microsoft.com/en-us/library/azure/dn170477.aspx
             // signature is computed from joined encoded request Uri string and expiry string
-            DateTime expiryTime = DateTime.UtcNow + TimeSpan.FromSeconds(validityPeriodInSeconds);
+            var expiryTime = DateTime.UtcNow + TimeSpan.FromSeconds(validityPeriodInSeconds);
             var expiry = ((long)(expiryTime -
                 new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds).ToString();
-            string encodedScope = Uri.EscapeDataString(connectionString.HostName);
+            var encodedScope = Uri.EscapeDataString(connectionString.HostName);
             string sig;
             // the connection string signature is base64 encoded
             var key = Convert.FromBase64String(connectionString.SharedAccessKey);

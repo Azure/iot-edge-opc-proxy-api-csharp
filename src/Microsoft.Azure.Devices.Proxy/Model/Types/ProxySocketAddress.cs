@@ -16,9 +16,7 @@ namespace Microsoft.Azure.Devices.Proxy {
     public class ProxySocketAddress : InetSocketAddress, IEquatable<ProxySocketAddress> {
 
         [DataMember(Name = "family", Order = 1)]
-        public override AddressFamily Family {
-            get => AddressFamily.Proxy;
-        }
+        public override AddressFamily Family => AddressFamily.Proxy;
 
         /// <summary>
         /// Interface Index field
@@ -84,7 +82,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         public static ProxySocketAddress Parse(string address) {
             string host;
             ushort port;
-            int index = address.IndexOf(':');
+            var index = address.IndexOf(':');
             if (index <= 0) {
                 host = address;
                 port = 0;

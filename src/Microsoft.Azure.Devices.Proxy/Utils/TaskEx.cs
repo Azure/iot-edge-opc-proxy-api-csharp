@@ -5,7 +5,6 @@
 
 namespace System.Threading.Tasks {
     using System;
-    using System.Threading;
 
     public static class TaskEx {
         public static Task Completed { get; } = Task.FromResult(true);

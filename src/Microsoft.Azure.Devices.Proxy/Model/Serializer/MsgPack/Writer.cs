@@ -288,7 +288,7 @@ namespace MsgPack {
         /// <param name="ct"></param>
         /// <returns></returns>
         public Task WriteAsync(float val, CancellationToken ct) {
-            byte[] raw = BitConverter.GetBytes(val);
+            var raw = BitConverter.GetBytes(val);
             _buffer[0] = (byte)Types.Float;
             if (BitConverter.IsLittleEndian) {
                 _buffer[1] = raw[3];
@@ -312,7 +312,7 @@ namespace MsgPack {
         /// <param name="ct"></param>
         /// <returns></returns>
         public Task WriteAsync(double val, CancellationToken ct) {
-            byte[] raw = BitConverter.GetBytes(val);
+            var raw = BitConverter.GetBytes(val);
             _buffer[0] = (byte)Types.Double;
             if (BitConverter.IsLittleEndian) {
                 _buffer[1] = raw[7];
@@ -538,17 +538,17 @@ namespace MsgPack {
         /// <param name="ct"></param>
         /// <returns></returns>
         public async Task WriteAsync(string val, CancellationToken ct) {
-            char[] chars = val.ToCharArray();
-            int len = val.Length;
-            Encoder encoder = Encoding.UTF8.GetEncoder();
+            var chars = val.ToCharArray();
+            var len = val.Length;
+            var encoder = Encoding.UTF8.GetEncoder();
             await WriteStrHeaderAsync(
                 encoder.GetByteCount(chars, 0, len, true), ct).ConfigureAwait(false);
 
             int copied;
-            int offset = 0;
+            var offset = 0;
             int encoded;
 
-            bool done = false;
+            var done = false;
             while (len > 0 || !done) {
                 encoder.Convert(chars, offset, len, _buffer, 0, _buffer.Length, false,
                     out encoded, out copied, out done);

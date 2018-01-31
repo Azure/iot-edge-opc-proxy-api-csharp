@@ -45,7 +45,7 @@ namespace System.Collections.Concurrent {
         /// </summary>
         /// <returns>The removed or created item.</returns>
         public T Get() {
-            return _container.TryTake(out T value) ? value : _generator();
+            return _container.TryTake(out var value) ? value : _generator();
         }
 
         private readonly IProducerConsumerCollection<T> _container;

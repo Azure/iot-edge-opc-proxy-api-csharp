@@ -9,7 +9,6 @@ namespace Microsoft.Azure.Devices.Proxy {
     //
     // Proxy protocol, defines messages sent to rpc socket communication.
     //
-    using System;
     using System.Runtime.Serialization;
     /// <summary>
     // Get option request, request value for specified option

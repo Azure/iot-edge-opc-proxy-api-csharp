@@ -19,9 +19,7 @@ namespace Microsoft.Azure.Devices.Proxy {
     public class SocketAddressCollection : SocketAddress, IEquatable<SocketAddressCollection> {
 
         [DataMember(Name = "family", Order = 1)]
-        public override AddressFamily Family {
-            get => AddressFamily.Collection;
-        }
+        public override AddressFamily Family => AddressFamily.Collection;
 
         /// <summary>
         /// Storage of socket addresses

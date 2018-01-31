@@ -11,27 +11,6 @@ namespace Microsoft.Azure.Devices.Proxy {
     using System.Threading.Tasks;
 
     public static class UtilsExtensions {
-        public static Task<Byte[]> ToBytes(this Stream stream) {
-            byte[] bytes = new byte[stream.Length];
-            int read, current = 0;
-            while ((read = stream.Read(bytes, current, bytes.Length - current)) > 0) {
-                current += read;
-            }
-
-            return Task.FromResult(bytes);
-        }
-
-        private static readonly Random rng = new Random();
-        public static void Shuffle<T>(this IList<T> list) {
-            int n = list.Count;
-            while (n > 1) {
-                n--;
-                int k = rng.Next(n + 1);
-                T value = list[k];
-                list[k] = list[n];
-                list[n] = value;
-            }
-        }
 
         public static void AddRange<T>(this ISet<T> set, IEnumerable<T> enumerable) {
             foreach (var item in enumerable) {
@@ -40,10 +19,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         public static void Append(this StringBuilder stringBuilder, byte[] bytes, int size) {
-            bool truncate = bytes.Length > size;
-            int length = truncate ? size : bytes.Length;
-            bool ascii = true;
-            for (int i = 0; i < length; i++) {
+            var truncate = bytes.Length > size;
+            var length = truncate ? size : bytes.Length;
+            var ascii = true;
+            for (var i = 0; i < length; i++) {
                 if (bytes[i] <= 32 || bytes[i] > 127) {
                     ascii = false;
                     break;
@@ -69,18 +48,9 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         public static string GetCombinedExceptionMessage(this AggregateException ae) {
-            StringBuilder sb = new StringBuilder();
-            foreach (Exception e in ae.InnerExceptions) {
+            var sb = new StringBuilder();
+            foreach (var e in ae.InnerExceptions) {
                 sb.AppendLine(string.Concat("E: ", e.Message));
-            }
-
-            return sb.ToString();
-        }
-
-        public static string GetCombinedExceptionStackTrace(this AggregateException ae) {
-            StringBuilder sb = new StringBuilder();
-            foreach (Exception e in ae.InnerExceptions) {
-                sb.AppendLine(string.Concat("StackTrace: ", e.StackTrace));
             }
 
             return sb.ToString();
@@ -97,7 +67,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             }
             else if (ex is AggregateException) {
                 var ae = ((AggregateException)ex).Flatten();
-                foreach (Exception e in ae.InnerExceptions) {
+                foreach (var e in ae.InnerExceptions) {
                     var found = GetFirstOf<T>(e);
                     if (found != null) {
                         return found;

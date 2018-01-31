@@ -47,9 +47,7 @@ namespace MsgPack {
         /// <summary>
         /// Last boolean read.
         /// </summary>
-        public bool Boolean {
-            get => Value != 0;
-        }
+        public bool Boolean => Value != 0;
 
         /// <summary>
         /// Last floating point value read.
@@ -61,9 +59,7 @@ namespace MsgPack {
         /// <summary>
         /// Or whether the value was nil
         /// </summary>
-        public bool IsNil {
-            get => _type == Types.Nil;
-        }
+        public bool IsNil => _type == Types.Nil;
 
         /// <summary>
         /// Constructor
@@ -77,14 +73,9 @@ namespace MsgPack {
         /// <summary>
         /// Whether coming is an array
         /// </summary>
-        public bool IsArray {
-            get {
-                return
-                    _type == Types.FixArray ||
+        public bool IsArray => _type == Types.FixArray ||
                     _type == Types.Array16 ||
                     _type == Types.Array32;
-            }
-        }
 
         /// <summary>
         /// Type safe read of array length
@@ -102,14 +93,9 @@ namespace MsgPack {
         /// <summary>
         /// Whether coming is a map
         /// </summary>
-        public bool IsMap {
-            get {
-                return
-                    _type == Types.FixMap ||
+        public bool IsMap => _type == Types.FixMap ||
                     _type == Types.Map16 ||
                     _type == Types.Map32;
-            }
-        }
 
         /// <summary>
         /// Type safe read of map length
@@ -130,7 +116,7 @@ namespace MsgPack {
         /// <param name="ct"></param>
         /// <returns></returns>
         public async Task<int> ReadObjectHeaderAsync(CancellationToken ct) {
-            int fields = 0;
+            var fields = 0;
             while (true) {
                 while (true) {
                     await ReadAsync(ct).ConfigureAwait(false);
@@ -177,13 +163,8 @@ namespace MsgPack {
         /// <summary>
         /// Whether coming is double
         /// </summary>
-        public bool IsDouble {
-            get {
-                return
-                    _type == Types.Double ||
+        public bool IsDouble => _type == Types.Double ||
                     _type == Types.Float;
-            }
-        }
 
         /// <summary>
         /// Typesafe read of double
@@ -217,13 +198,8 @@ namespace MsgPack {
         /// <summary>
         /// Last read value is boolean
         /// </summary>
-        public bool IsBoolean {
-            get {
-                return
-                    _type == Types.True ||
+        public bool IsBoolean => _type == Types.True ||
                     _type == Types.False;
-            }
-        }
 
         /// <summary>
         /// Type safe read of bool
@@ -238,16 +214,11 @@ namespace MsgPack {
             return Boolean;
         }
 
-        public bool IsUnsigned {
-            get {
-                return
-                    _type == Types.PositiveFixNum ||
+        public bool IsUnsigned => _type == Types.PositiveFixNum ||
                     _type == Types.Uint8 ||
                     _type == Types.UInt16 ||
                     _type == Types.UInt32 ||
                     _type == Types.UInt64;
-            }
-        }
 
         /// <summary>
         /// Type safe read of byte
@@ -322,17 +293,12 @@ namespace MsgPack {
         /// <summary>
         /// Whether value is signed
         /// </summary>
-        public bool IsSigned {
-            get {
-                return
-                    _type == Types.NegativeFixNum ||
+        public bool IsSigned => _type == Types.NegativeFixNum ||
                     _type == Types.PositiveFixNum ||
                     _type == Types.Int8 ||
                     _type == Types.Int16 ||
                     _type == Types.Int32 ||
                     _type == Types.Int64;
-            }
-        }
 
         /// <summary>
         /// Type safe read of sbyte
@@ -344,7 +310,7 @@ namespace MsgPack {
             if (!IsSigned && !IsUnsigned) {
                 throw new FormatException("Not integer");
             }
-            long signed = Signed;
+            var signed = Signed;
             if (signed < short.MinValue || signed > short.MaxValue) {
                 throw new FormatException("sbyte overflow");
             }
@@ -361,7 +327,7 @@ namespace MsgPack {
             if (!IsSigned && !IsUnsigned) {
                 throw new FormatException("Not integer");
             }
-            long signed = Signed;
+            var signed = Signed;
             if (signed < short.MinValue || signed > short.MaxValue) {
                 throw new FormatException("short overflow");
             }
@@ -401,14 +367,9 @@ namespace MsgPack {
         /// <summary>
         /// Whether following is string
         /// </summary>
-        public bool IsBin {
-            get {
-                return
-                    _type == Types.Bin8 ||
+        public bool IsBin => _type == Types.Bin8 ||
                     _type == Types.Bin16 ||
                     _type == Types.Bin32;
-            }
-        }
 
         /// <summary>
         /// Read buffer
@@ -420,8 +381,8 @@ namespace MsgPack {
             if (!IsBin) {
                 throw new FormatException("Not raw");
             }
-            int len = (int)Value;
-            byte[] tmp = new byte[len];
+            var len = (int)Value;
+            var tmp = new byte[len];
             if (Value == 0) {
                 return tmp;
             }
@@ -432,15 +393,10 @@ namespace MsgPack {
         /// <summary>
         /// Whether following is string
         /// </summary>
-        public bool IsStr {
-            get {
-                return
-                    _type == Types.FixStr ||
+        public bool IsStr => _type == Types.FixStr ||
                     _type == Types.Str8 ||
                     _type == Types.Str16 ||
                     _type == Types.Str32;
-            }
-        }
 
         /// <summary>
         /// Read string
@@ -455,7 +411,7 @@ namespace MsgPack {
             if (Value == 0) {
                 return string.Empty;
             }
-            int len = (int)Value;
+            var len = (int)Value;
             byte[] tmp;
             if (len < _buffer.Length) {
                 tmp = _buffer;
@@ -634,7 +590,7 @@ namespace MsgPack {
         /// <param name="ct"></param>
         /// <returns></returns>
         private async Task ReadAsync(byte[] buf, int len, CancellationToken ct) {
-            int read = 0;
+            var read = 0;
             while (read != len) {
                 read += await _strm.ReadAsync(
                     buf, read, len - read, ct).ConfigureAwait(false);

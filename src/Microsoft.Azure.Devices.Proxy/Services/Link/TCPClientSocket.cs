@@ -6,7 +6,6 @@
 namespace Microsoft.Azure.Devices.Proxy {
     using System;
     using System.Linq;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks.Dataflow;
     using System.Threading.Tasks;
@@ -20,37 +19,27 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Returns the proxy address of the underlying link
         /// </summary>
-        public override SocketAddress ProxyAddress {
-            get => _link.ProxyAddress;
-        }
+        public override SocketAddress ProxyAddress => _link.ProxyAddress;
 
         /// <summary>
         /// Local address on proxy for underlying link
         /// </summary>
-        public override SocketAddress LocalAddress {
-            get => _link.LocalAddress;
-        }
+        public override SocketAddress LocalAddress => _link.LocalAddress;
 
         /// <summary>
         /// peer address of the Host the linked proxy is connected to.
         /// </summary>
-        public override SocketAddress PeerAddress {
-            get => _link.PeerAddress;
-        }
+        public override SocketAddress PeerAddress => _link.PeerAddress;
 
         /// <summary>
         /// The underlying link's send block
         /// </summary>
-        public override ITargetBlock<Message> SendBlock {
-            get => _link.SendBlock;
-        }
+        public override ITargetBlock<Message> SendBlock => _link.SendBlock;
 
         /// <summary>
         /// The underlying link's receive block
         /// </summary>
-        public override ISourceBlock<Message> ReceiveBlock {
-            get => _link.ReceiveBlock;
-        }
+        public override ISourceBlock<Message> ReceiveBlock => _link.ReceiveBlock;
 
         /// <summary>
         /// Constructor
@@ -334,7 +323,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         public async override Task<int> SendAsync(ArraySegment<byte> buffer,
             SocketAddress endpoint, CancellationToken ct) {
-            bool sent = await SendBlock.SendAsync(Message.Create(null, null, null,
+            var sent = await SendBlock.SendAsync(Message.Create(null, null, null,
                 DataMessage.Create(buffer, endpoint)), ct).ConfigureAwait(false);
             return buffer.Count;
         }
@@ -358,7 +347,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             }
 
             if (_lastData != null) {
-                int copied = CopyBuffer(ref buffer);
+                var copied = CopyBuffer(ref buffer);
                 if (copied > 0) {
                     return Task.FromResult(new ProxyAsyncResult { Count = copied });
                 }
@@ -427,7 +416,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         private int CopyBuffer(ref ArraySegment<Byte> buffer) {
             // How much to copy from the last data buffer.
-            int toCopy = Math.Min(buffer.Count, _lastData.Payload.Length - _offset);
+            var toCopy = Math.Min(buffer.Count, _lastData.Payload.Length - _offset);
             Buffer.BlockCopy(_lastData.Payload, _offset,
                 buffer.Array, buffer.Offset, toCopy);
             _offset += toCopy;

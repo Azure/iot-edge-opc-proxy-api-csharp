@@ -34,15 +34,15 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
         ///
         /// </summary>
         static void Main(string[] args) {
-            Op op = Op.None;
-            bool bypass = false;
-            int index = 0;
-            int timeout = 10;
-            int bufferSize = 60000;
+            var op = Op.None;
+            var bypass = false;
+            var index = 0;
+            var timeout = 10;
+            var bufferSize = 60000;
 
             // Parse command line
             try {
-                for (int i = 0; i < args.Length; i++) {
+                for (var i = 0; i < args.Length; i++) {
                     switch (args[i]) {
                         case "--all":
                             if (op != Op.None) {
@@ -170,7 +170,7 @@ Operations (Mutually exclusive):
                 }
             }
             else {
-                for (int j = index + 1; ; j++) {
+                for (var j = index + 1; ; j++) {
                     if (op == Op.Sync || op == Op.All) {
                         Console.Clear();
                         Console.Out.WriteLine($"#{j} Sync tests...");
@@ -192,7 +192,7 @@ Operations (Mutually exclusive):
                         Console.Out.WriteLine($"#{j} Async tests...");
                         var tasks = new List<Task>();
                         try {
-                            for (int i = 0; i < j + 1; i++) {
+                            for (var i = 0; i < j + 1; i++) {
                                 tasks.Add(ReceiveAsync(i, 19));
                                 tasks.Add(ReceiveAsync(i, 13));
                                 tasks.Add(ReceiveAsync(i, 17));
@@ -223,27 +223,27 @@ Operations (Mutually exclusive):
         }
 
         public static void Receive(int port) {
-            byte[] buffer = new byte[1024];
-            using (Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
+            var buffer = new byte[1024];
+            using (var s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
                 s.Connect(hostName, port);
                 Console.Out.WriteLine($"Receive: Connected to {s.RemoteEndPoint} on {s.InterfaceEndPoint} via {s.LocalEndPoint}!");
                 Console.Out.WriteLine("Receive: Receiving sync...");
-                int count =  s.Receive(buffer);
+                var count =  s.Receive(buffer);
                 Console.Out.WriteLine(Encoding.UTF8.GetString(buffer, 0, count));
                 s.Close();
             }
         }
 
         public static void EchoLoop(int loops) {
-            using (Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
+            using (var s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
                 s.Connect(hostName, 7);
                 Console.Out.WriteLine($"EchoLoop: Connected to {s.RemoteEndPoint} on {s.InterfaceEndPoint} via {s.LocalEndPoint}!");
 
-                for (int i = 0; i < loops; i++) {
+                for (var i = 0; i < loops; i++) {
                     s.Send(Encoding.UTF8.GetBytes($"EchoLoop: {i} sync loop to echo server"));
-                    byte[] buffer = new byte[1024];
+                    var buffer = new byte[1024];
                     Console.Out.WriteLine($"EchoLoop: {i}:        Receiving sync...");
-                    int count = s.Receive(buffer);
+                    var count = s.Receive(buffer);
                     Console.Out.WriteLine(Encoding.UTF8.GetString(buffer, 0, count));
                 }
                 s.Close();
@@ -251,35 +251,35 @@ Operations (Mutually exclusive):
         }
 
         public static void Send(int port, byte[] buffer, int iterations) {
-            using (Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
+            using (var s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
                 s.Connect(hostName, port);
                 Console.Out.WriteLine($"Send: Connected to {s.RemoteEndPoint} on {s.InterfaceEndPoint} via {s.LocalEndPoint}!");
                 Console.Out.WriteLine("Send: Sending sync ...");
-                for (int i = 0; i < iterations; i++)
+                for (var i = 0; i < iterations; i++)
                     s.Send(buffer);
                 s.Close();
             }
         }
 
         public static void SendReceive(int port, byte[] buffer) {
-            using (Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
+            using (var s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
                 s.Connect(hostName, port);
                 Console.Out.WriteLine($"SendReceive: Connected to {s.RemoteEndPoint} on {s.InterfaceEndPoint} via {s.LocalEndPoint}!");
                 Console.Out.WriteLine("SendReceive: Sending sync ...");
                 s.Send(buffer);
                 buffer = new byte[1024];
                 Console.Out.WriteLine("SendReceive: Receiving sync...");
-                int count = s.Receive(buffer);
+                var count = s.Receive(buffer);
                 Console.Out.WriteLine(Encoding.UTF8.GetString(buffer, 0, count));
                 s.Close();
             }
         }
 
         public static async Task EchoLoopAsync(int index, int loops) {
-            using (Socket s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
+            using (var s = new Socket(SocketType.Stream, ProtocolType.Tcp)) {
                 await s.ConnectAsync(hostName, 7, CancellationToken.None);
                 Console.Out.WriteLine($"EchoLoopAsync #{index}: Connected!");
-                for (int i = 0; i < loops; i++) {
+                for (var i = 0; i < loops; i++) {
                     await EchoLoopAsync1(index, s, i);
                 }
                 await s.CloseAsync(CancellationToken.None);
@@ -288,18 +288,18 @@ Operations (Mutually exclusive):
         }
 
         public static async Task PerfLoopAsync(int bufferSize, CancellationToken ct) {
-            int port = 5000;
+            var port = 5000;
             var cts = new CancellationTokenSource();
             var server = PerfEchoServer(port, cts.Token);
             await Task.Delay(100);
             try {
                 using (var client = new TcpClient()) {
                     await client.ConnectAsync(hostName, port);
-                    byte[] buffer = new byte[bufferSize];
+                    var buffer = new byte[bufferSize];
                     _rand.NextBytes(buffer);
                     long _received = 0;
-                    Stopwatch _receivedw = Stopwatch.StartNew();
-                    for (int i = 0; !ct.IsCancellationRequested; i++) {
+                    var _receivedw = Stopwatch.StartNew();
+                    for (var i = 0; !ct.IsCancellationRequested; i++) {
                         _received += await EchoLoopAsync2(client.GetStream(), buffer);
                         Console.CursorLeft = 0; Console.CursorTop = 0;
                         Console.Out.WriteLine($"{i} { (_received / _receivedw.ElapsedMilliseconds) } kB/sec");
@@ -313,18 +313,18 @@ Operations (Mutually exclusive):
         }
 
         public static async Task PerfLoopComparedAsync(int bufferSize, CancellationToken ct) {
-            int port = 5000;
+            var port = 5000;
             var cts = new CancellationTokenSource();
             var server = PerfEchoServer(port, cts.Token);
             await Task.Delay(100);
             try {
                 using (var client = new System.Net.Sockets.TcpClient()) {
                     await client.ConnectAsync(hostName, port);
-                    byte[] buffer = new byte[bufferSize];
+                    var buffer = new byte[bufferSize];
                     _rand.NextBytes(buffer);
                     long _received = 0;
-                    Stopwatch _receivedw = Stopwatch.StartNew();
-                    for (int i = 0; !ct.IsCancellationRequested; i++) {
+                    var _receivedw = Stopwatch.StartNew();
+                    for (var i = 0; !ct.IsCancellationRequested; i++) {
                         _received += await EchoLoopAsync2(client.GetStream(), buffer);
                         Console.CursorLeft = 0; Console.CursorTop = 0;
                         Console.Out.WriteLine($"{i} { (_received / _receivedw.ElapsedMilliseconds) } kB/sec");
@@ -343,8 +343,8 @@ Operations (Mutually exclusive):
             try {
                 await Task.Run(async () => {
                     var client = await server.AcceptSocketAsync();
-                    byte[] buf = new byte[0x10000];
-                    int rcvbyte = 0;
+                    var buf = new byte[0x10000];
+                    var rcvbyte = 0;
 
                     while ((rcvbyte = client.Receive(buf, buf.Length, System.Net.Sockets.SocketFlags.None)) > 0) {
                         client.Send(buf, rcvbyte, System.Net.Sockets.SocketFlags.None);
@@ -359,9 +359,9 @@ Operations (Mutually exclusive):
 
         private static async Task<int> EchoLoopAsync2(Stream stream, byte[] msg) {
             await stream.WriteAsync(msg, 0, msg.Length, CancellationToken.None);
-            byte[] buffer = new byte[msg.Length];
+            var buffer = new byte[msg.Length];
             try {
-                int offset = 0;
+                var offset = 0;
                 while (offset < buffer.Length) {
                     var rcvbyte = await stream.ReadAsync(buffer, offset, buffer.Length - offset);
                     offset += rcvbyte;
@@ -380,12 +380,12 @@ Operations (Mutually exclusive):
         }
 
         public static async Task ReceiveAsync(int index, int port) {
-            byte[] buffer = new byte[1024];
-            using (TcpClient client = new TcpClient()) {
+            var buffer = new byte[1024];
+            using (var client = new TcpClient()) {
                 await client.ConnectAsync(hostName, port, CancellationToken.None);
                 Console.Out.WriteLine($"ReceiveAsync #{index}: Connected to port {port}!.  Read ...");
-                using (NetworkStream str = client.GetStream()) {
-                    int read = await str.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None);
+                using (var str = client.GetStream()) {
+                    var read = await str.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None);
                     Console.Out.WriteLine($"{Encoding.UTF8.GetString(buffer, 0, read)}     #{index}");
                 }
             }
@@ -393,25 +393,25 @@ Operations (Mutually exclusive):
         }
 
         public static async Task SendReceiveAsync(int index, int port, byte[] buffer) {
-            using (TcpClient client = new TcpClient()) {
+            using (var client = new TcpClient()) {
                 await client.ConnectAsync(hostName, port, CancellationToken.None);
                 Console.Out.WriteLine($"SendReceiveAsync #{index}: Connected to port {port}!.  Write ...");
-                NetworkStream str = client.GetStream();
+                var str = client.GetStream();
                 await str.WriteAsync(buffer, 0, buffer.Length, CancellationToken.None);
-                int read = await str.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None);
+                var read = await str.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None);
                 Console.Out.WriteLine(Encoding.UTF8.GetString(buffer, 0, read));
             }
             Console.Out.WriteLine($"SendReceiveAsync #{index} port {port}.  Done!");
         }
 
         private static async Task EchoLoopAsync1(int index, Socket s, int i) {
-            ushort id = (ushort)(short.MaxValue * _rand.NextDouble());
+            var id = (ushort)(short.MaxValue * _rand.NextDouble());
             var msg = Encoding.UTF8.GetBytes(
                 string.Format("{0,6} async loop #{1} to echo server {2}", i, index, id));
             await s.SendAsync(msg, 0, msg.Length, CancellationToken.None);
-            byte[] buffer = new byte[msg.Length];
+            var buffer = new byte[msg.Length];
             try {
-                int count = await s.ReceiveAsync(buffer, 0, buffer.Length);
+                var count = await s.ReceiveAsync(buffer, 0, buffer.Length);
                 Console.Out.WriteLine("({1,6}) received '{0}' ... (#{2}, {3})",
                     Encoding.UTF8.GetString(buffer, 0, count), i, index, id);
 #if TEST

@@ -185,7 +185,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 return (zat == null);
             }
             else if (zat != null && ziss.Length == zat.Length) {
-                for(int i = 0; i < zat.Length; i++) {
+                for(var i = 0; i < zat.Length; i++) {
                     if (!IsEqual(ziss[i], zat[i])) {
                         return false;
                     }

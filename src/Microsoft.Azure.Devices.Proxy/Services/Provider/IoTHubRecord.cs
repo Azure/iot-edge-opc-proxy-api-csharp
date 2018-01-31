@@ -164,7 +164,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 _tags.Add(_referencesTag, refs);
             }
             if (!refs.TryGetValue(address.ToString(),
-                StringComparison.CurrentCultureIgnoreCase, out JToken val) ||
+                StringComparison.CurrentCultureIgnoreCase, out var val) ||
                 !val.ToString().Equals(address.ToString())) {
 
                 refs[address.ToString()] = address.ToString();
