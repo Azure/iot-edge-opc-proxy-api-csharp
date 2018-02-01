@@ -259,16 +259,22 @@ namespace Microsoft.Azure.Devices.Proxy {
             // proxy information. These are then posted to the linker for linking.
             //
             if (endpoint == null || endpoint is AnySocketAddress) {
-                await query.SendAsync(r => r.Matches(Reference.All, NameRecordType.Proxy),
-                    ct).ConfigureAwait(false);
+                await query.SendAsync(r => r.IsProxyForHost(null), ct).ConfigureAwait(false);
             }
             else {
                 while (endpoint.Family == AddressFamily.Bound) {
                     // Unwrap bound address
                     endpoint = ((BoundSocketAddress)endpoint).LocalAddress;
                 }
-                await query.SendAsync(r => r.Matches(endpoint, NameRecordType.Proxy),
-                    ct).ConfigureAwait(false);
+                // Match domain based on passed name in proxy address ...
+                if (endpoint is ProxySocketAddress proxyAddress) {
+                    await query.SendAsync(r => r.IsProxyForHost(proxyAddress),
+                        ct).ConfigureAwait(false);
+                }
+                else {
+                    await query.SendAsync(r => r.Matches(endpoint, NameRecordType.Proxy),
+                        ct).ConfigureAwait(false);
+                }
             }
 
             var pnp = new TransformManyBlock<Tuple<INameRecord, NameServiceEvent>, INameRecord>(

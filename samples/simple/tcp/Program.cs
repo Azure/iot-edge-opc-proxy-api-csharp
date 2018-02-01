@@ -15,7 +15,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
 
     class Program {
 
-        static readonly string hostName = System.Net.Dns.GetHostName();
+        static string hostName = System.Net.Dns.GetHostName();
         static Random rand = new Random();
 
         enum Op {
@@ -78,6 +78,14 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                                 throw new ArgumentException($"Bad -t arg");
                             }
                             break;
+                        case "-h":
+                        case "--hostname":
+                            i++;
+                            if (i >= args.Length || string.IsNullOrEmpty(args[i])) {
+                                throw new ArgumentException($"Bad -h arg");
+                            }
+                            hostName = args[i];
+                            break;
                         case "-b":
                         case "--start-at":
                             i++;
@@ -104,7 +112,6 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                             Provider.WebSocketProvider.Create();
                             break;
                         case "-?":
-                        case "-h":
                         case "--help":
                             throw new ArgumentException("Help");
                         default:
@@ -131,10 +138,11 @@ Options:
      -b      Begins the test loop at this index. Defaults to 0.
     --timeout
      -t      Async tests timeout in minutes. Defaults to 10.
+    --hostname
+     -h      Connect to specified host, if not set, localhost.
 
     --help
-     -?
-     -h      Prints out this help.
+     -?      Prints out this help.
 
 Operations (Mutually exclusive):
     --all

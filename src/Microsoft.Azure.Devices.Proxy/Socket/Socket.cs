@@ -133,7 +133,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         //
         // Set/get the send timeout
         //
-        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(30000);
+        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(20);
 
         //
         // Opens the socket and links as active

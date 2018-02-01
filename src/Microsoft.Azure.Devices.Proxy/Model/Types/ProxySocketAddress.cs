@@ -43,6 +43,14 @@ namespace Microsoft.Azure.Devices.Proxy {
         } = "";
 
         /// <summary>
+        /// Domain name to use
+        /// </summary>
+        [DataMember(Name = "domain", Order = 5)]
+        public string Domain {
+            get; set;
+        } = "";
+
+        /// <summary>
         /// Default constructor
         /// </summary>
         public ProxySocketAddress() {
@@ -55,9 +63,14 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="port"></param>
         /// <param name="flags"></param>
         /// <param name="interfaceIndex"></param>
-        public ProxySocketAddress(string host, ushort port = 0,
+        public ProxySocketAddress(string host, ushort port = 0, 
             ushort flags = 0, int interfaceIndex = -1) : this() {
-            Host = host ?? throw new ArgumentNullException(nameof(host));
+            if (host == null) {
+                throw new ArgumentNullException(nameof(host));
+            }
+            // Parse a domain from host if any provided.
+            Host = ParseDomain(host, out var domain);
+            Domain = domain;
             Port = port;
             Flags = flags;
             InterfaceIndex = interfaceIndex;
@@ -91,7 +104,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 host = address.Substring(0, index);
                 port = ushort.Parse(address.Substring(index + 1));
             }
-            return new ProxySocketAddress(host, port, 0);
+            return new ProxySocketAddress(host, port);
         }
 
         /// <summary>
@@ -121,7 +134,8 @@ namespace Microsoft.Azure.Devices.Proxy {
             }
             return
                 IsEqual(that as InetSocketAddress) &&
-                IsEqual(Host, that.Host);
+                IsEqual(Host, that.Host) &&
+                IsEqual(Domain, that.Domain);
         }
 
         public override bool IsEqual(object that) => Equals(that as ProxySocketAddress);
@@ -129,6 +143,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         protected override void SetHashCode() {
             base.SetHashCode();
             MixToHash(Host);
+            MixToHash(Domain);
         }
 
         public override ProxySocketAddress AsProxySocketAddress() => this;
@@ -138,7 +153,29 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// </summary>
         /// <returns></returns>
         public override string ToString() {
-            return $"{Host}:{Port}";
+            return $"{Host}{(!string.IsNullOrEmpty(Domain) ? (kDomainDelimiter + Domain) : "")}:{Port}";
         }
+
+        /// <summary>
+        /// Parse domain from host name
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        private string ParseDomain(string host, out string domain) {
+            host = host.Trim().ToLowerInvariant();
+            if (host.Contains(kDomainDelimiter)) {
+                var components = host.Split(new string[] { kDomainDelimiter },
+                    StringSplitOptions.RemoveEmptyEntries);
+                if (components.Length == 2) {
+                    domain = components[1].Trim();
+                    return components[0].Trim();
+                }
+            }
+            domain = null;
+            return host;
+        }
+
+        const string kDomainDelimiter = ".proxy.";
     }
 }

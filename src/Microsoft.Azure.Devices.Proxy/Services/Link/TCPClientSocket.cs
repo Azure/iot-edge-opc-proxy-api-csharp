@@ -100,11 +100,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="ct"></param>
         /// <returns></returns>
         public override async Task ConnectAsync(SocketAddress address, CancellationToken ct) {
-            //
-            // The address is a combination of proxy binding and remote address.  This is
-            // the case for all addresses returned by Dns resolution.  If no address was
-            // previously bound - use the one provided here.
-            //
+
             Info.Address = address;
             if (Info.Address.Family == AddressFamily.Bound) {
                 // Unwrap proxy and connect address.  If not bound, use local address to bind to.
@@ -249,7 +245,6 @@ namespace Microsoft.Azure.Devices.Proxy {
                 if (Host.References.Any()) {
                     // Delay ping through errors path to give references time to link...
                     pingAdapter.ConnectTo(errors);
-
                     await linkQuery.SendAsync(r => r.Matches(Host.References,
                         NameRecordType.Proxy), ct).ConfigureAwait(false);
                 }
@@ -258,10 +253,8 @@ namespace Microsoft.Azure.Devices.Proxy {
                     pingAdapter.ConnectTo(pinger);
                 }
 
-                await remaining.SendAsync(r =>
-                        !Host.References.Contains(r.Address) &&
-                        r.Matches(Reference.All, NameRecordType.Proxy),
-                    ct).ConfigureAwait(false);
+                await remaining.SendAsync(r => r.IsProxyForHost(Info.Address), ct)
+                    .ConfigureAwait(false);
             }
 
             // Wait until a connected link is received.  Then cancel the remainder of the pipeline.
