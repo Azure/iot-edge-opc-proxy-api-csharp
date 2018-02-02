@@ -12,7 +12,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
     /// Provider for websocket streaming based on Kestrel
     /// implementation
     /// </summary>
-    public class WebSocketProvider {
+    public static class WebSocketProvider {
 
         /// <summary>
         /// Create provider host from Configuration
@@ -34,8 +34,9 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             .Build();
 
             // Listen endpoint
-            var endpoint = new UriBuilder(url);
-            endpoint.Host = "*";
+            var endpoint = new UriBuilder(url) {
+                Host = "*"
+            };
 
             // Build web host
             new WebHostBuilder()

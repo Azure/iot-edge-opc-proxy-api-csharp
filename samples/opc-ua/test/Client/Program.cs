@@ -23,7 +23,7 @@ namespace NetCoreConsoleClient {
 
     public class Program {
 
-        private const String _clientName = ".Net Core OPC UA Console Client";
+        private const string _clientName = ".Net Core OPC UA Console Client";
 
         enum Op {
             Browse, Reconnect, Subscribe, All, None
@@ -255,8 +255,6 @@ Operations (Mutually exclusive):
 
                     while (true) {
                         var w = Stopwatch.StartNew();
-                        byte[] continuationPoint;
-                        ReferenceDescriptionCollection references;
 
                         var stack = new Stack<Tuple<string, ReferenceDescription>>();
                         session.Browse(
@@ -268,8 +266,8 @@ Operations (Mutually exclusive):
                             ReferenceTypeIds.HierarchicalReferences,
                             true,
                             (uint)NodeClass.Variable | (uint)NodeClass.Object | (uint)NodeClass.Method,
-                            out continuationPoint,
-                            out references);
+                            out var continuationPoint,
+                            out var references);
 
                         Console.WriteLine(" DisplayName, BrowseName, NodeClass");
                         references.Reverse();

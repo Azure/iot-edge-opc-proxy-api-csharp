@@ -92,8 +92,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         private string this [Id id] {
             get {
-                string value;
-                if (!items.TryGetValue(id, out value)) {
+                if (!items.TryGetValue(id, out var value)) {
                     return null;
                 }
 

@@ -534,14 +534,12 @@ namespace MsgPack {
             await WriteStrHeaderAsync(
                 encoder.GetByteCount(chars, 0, len, true), ct).ConfigureAwait(false);
 
-            int copied;
             var offset = 0;
-            int encoded;
 
             var done = false;
             while (len > 0 || !done) {
                 encoder.Convert(chars, offset, len, _buffer, 0, _buffer.Length, false,
-                    out encoded, out copied, out done);
+                    out var encoded, out var copied, out done);
                 await _strm.WriteAsync(_buffer, 0, copied, ct).ConfigureAwait(false);
                 if (done) {
                     break;

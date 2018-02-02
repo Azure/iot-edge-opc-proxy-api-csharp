@@ -172,8 +172,7 @@ options:
                         }
                         prog.Ports.Add(tmp);
                         if (ports.Length == 2) {
-                            int hi;
-                            if (!int.TryParse(ports[1], out hi) || hi > ushort.MaxValue) {
+                            if (!int.TryParse(ports[1], out var hi) || hi > ushort.MaxValue) {
                                 throw new ArgumentException($"Invalid upper bound for port range: {opt}.");
                             }
                             while (++tmp <= hi) {

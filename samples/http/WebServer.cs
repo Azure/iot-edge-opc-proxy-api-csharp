@@ -19,14 +19,20 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
         /// <summary>
         /// App configuration
         /// </summary>
-        public IConfigurationRoot Configuration { get; private set; }
+        public IConfigurationRoot Configuration { get;  }
+
+        /// <summary>
+        /// Environment
+        /// </summary>
+        public IHostingEnvironment Environment { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="env"></param>
-        public Startup(IHostingEnvironment env) {
+        /// <param name="environment"></param>
+        public Startup(IHostingEnvironment environment) {
             Configuration = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+            Environment = environment;
         }
 
         /// <summary>

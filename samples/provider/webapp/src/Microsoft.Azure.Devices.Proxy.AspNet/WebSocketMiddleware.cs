@@ -78,9 +78,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns></returns>
         public Task<IConnection> CreateConnectionAsync(Reference streamId,
             Reference remoteId, INameRecord proxy, CodecId encoding) {
-            var uri = new UriBuilder(_uri);
-            uri.Scheme = _secure ? "wss" : "ws";
-            uri.Path = streamId.ToString();
+            var uri = new UriBuilder(_uri) {
+                Scheme = _secure ? "wss" : "ws",
+                Path = streamId.ToString()
+            };
             var connection = new WebSocketConnection(this, streamId, remoteId, encoding,
                 ConnectionString.Create(uri.Uri, "proxy", "secret"));
             _connectionMap.AddOrUpdate(streamId, connection, (r, s) => connection);

@@ -51,8 +51,7 @@ namespace RemoteViewing.Example {
                     return;
                 }
 
-                int port;
-                if (!int.TryParse(txtPort.Text, out port) || port < 1 || port > 65535) {
+                if (!int.TryParse(txtPort.Text, out var port) || port < 1 || port > 65535) {
                     MessageBox.Show(this, "Port must be between 1 and 65535.", "Port",
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;

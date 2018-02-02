@@ -47,6 +47,7 @@
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Signed' ">

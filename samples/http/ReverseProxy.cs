@@ -47,9 +47,8 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             if (realUri != null) {
                 await ServeAsync(context, realUri, val => {
                     // Rewrite uris
-                    Uri parsed;
                     try {
-                        if (Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out parsed)) {
+                        if (Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out var parsed)) {
                             var mappedUri = new UriBuilder();
                             // Handle relative paths...
                             if (!parsed.IsAbsoluteUri || string.IsNullOrEmpty(parsed.Scheme)) {
@@ -120,8 +119,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     }
 
                     // Handle redirect to new target - 
-                    Uri redirect;
-                    if (Uri.TryCreate(target, UriKind.RelativeOrAbsolute, out redirect)) {
+                    if (Uri.TryCreate(target, UriKind.RelativeOrAbsolute, out var redirect)) {
                         res = redirect.PathAndQuery;
                         if (redirect.IsAbsoluteUri) {
                             // if it is absolute, reconnect to the new host
@@ -192,8 +190,9 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             }
 
             var uri = new UriBuilder(request.IsHttps ? "https" : "http",
-                target, port, path);
-            uri.Query = request.QueryString.Value;
+                target, port, path) {
+                Query = request.QueryString.Value
+            };
             return uri.Uri;
         }
 
@@ -347,22 +346,22 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 response.Headers.Add(entry.Key, entry.Value);
             }
 
-            Encoding encoder;
             if (response.StatusCode == StatusCodes.Status204NoContent ||
                 response.StatusCode == StatusCodes.Status205ResetContent ||
-                response.StatusCode == StatusCodes.Status304NotModified){
+                response.StatusCode == StatusCodes.Status304NotModified) {
                 response.ContentLength = 0;
                 await response.Body.FlushAsync();
             }
-            else if (IsTextContent(response.ContentType, out encoder)) {
-                
+            else if (IsTextContent(response.ContentType, out var encoder)) {
+
                 // Remember host as fallback
                 response.Cookies.Append("host", host);
 
                 await reader.ReadBodyAsync(response, isChunked, (body, len) => {
                     if (!string.IsNullOrWhiteSpace(contentEncoding)) {
                         var mem = new MemoryStream(body, 0, len);
-                        /**/ if (contentEncoding.Equals("gzip")) {
+                        /**/
+                        if (contentEncoding.Equals("gzip")) {
                             using (var gzip = new GZipStream(mem,
                                 CompressionMode.Decompress, false)) {
                                 s = gzip.ToString(encoder);
@@ -391,7 +390,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     // 2. find any href="/ and src="/ and rewrite content.
                     s = _rels.Replace(s, (f) => {
                         var val = f.Groups["url"].Value.TrimStart().TrimStart('.');
-                        if (!val.StartsWith("/", StringComparison.Ordinal) || 
+                        if (!val.StartsWith("/", StringComparison.Ordinal) ||
                             val.StartsWith("//", StringComparison.Ordinal)) {
                             return f.Value;
                         }
@@ -404,7 +403,8 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     if (!string.IsNullOrWhiteSpace(contentEncoding)) {
 
                         var mem = new MemoryStream();
-                        /**/ if (contentEncoding.Equals("gzip")) {
+                        /**/
+                        if (contentEncoding.Equals("gzip")) {
                             using (var gzip = new GZipStream(mem,
                                 CompressionMode.Compress, true)) {
                                 gzip.Write(body, 0, body.Length);

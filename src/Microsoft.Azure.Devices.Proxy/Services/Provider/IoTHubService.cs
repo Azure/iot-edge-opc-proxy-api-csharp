@@ -191,8 +191,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                         }
                     }, (s, h) => {
                         // get continuation returned if any
-                        IEnumerable<string> values;
-                        if (h.TryGetValues("x-ms-continuation", out values)) {
+                        if (h.TryGetValues("x-ms-continuation", out var values)) {
                             continuation = values.FirstOrDefault();
                         }
                         else {
