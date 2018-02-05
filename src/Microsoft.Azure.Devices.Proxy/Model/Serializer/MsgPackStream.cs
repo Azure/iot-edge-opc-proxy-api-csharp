@@ -32,9 +32,9 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// Constructor
         /// </summary>
         /// <param name="strm"></param>
-        public MsgPackStream(S strm, bool owner = false) : this(owner) =>
+        public MsgPackStream(S strm, bool owner = false) : this(owner) {
             Stream = strm;
-
+        }
 
         /// <summary>
         /// The wrapped stream
@@ -79,7 +79,6 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// Read object from stream
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="ct"></param>
         /// <returns></returns>
         public T Read<T>() =>
             TaskToSync.Run(() => ReadAsync<T>(CancellationToken.None));
@@ -89,7 +88,6 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="ct"></param>
         /// <returns></returns>
         public void Write<T>(T obj) =>
             TaskToSync.Run(() => WriteAsync(obj, CancellationToken.None));

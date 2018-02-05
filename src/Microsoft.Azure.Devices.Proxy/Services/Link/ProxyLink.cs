@@ -6,8 +6,6 @@
 namespace Microsoft.Azure.Devices.Proxy {
     using System;
     using System.Linq;
-    using System.Collections.Generic;
-    using System.Collections.Concurrent;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Threading.Tasks.Dataflow;
@@ -49,23 +47,17 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Proxy the socket is bound on.
         /// </summary>
-        public SocketAddress ProxyAddress {
-            get => Proxy.Address.ToSocketAddress();
-        }
+        public SocketAddress ProxyAddress => Proxy.Address.ToSocketAddress();
 
         /// <summary>
         /// Target buffer block
         /// </summary>
-        public ITargetBlock<Message> SendBlock {
-            get => _send;
-        }
+        public ITargetBlock<Message> SendBlock => _send;
 
         /// <summary>
         /// Source buffer block
         /// </summary>
-        public ISourceBlock<Message> ReceiveBlock {
-            get => _receive;
-        }
+        public ISourceBlock<Message> ReceiveBlock => _receive;
 
         /// <summary>
         /// Constructor for proxy link object
@@ -142,8 +134,8 @@ namespace Microsoft.Azure.Devices.Proxy {
                 }
                 // Split messages if needed using max size
                 var data = message.Content as DataMessage;
-                int segmentCount = data.Payload.Length / maxSize;
-                int segmentSize = maxSize;
+                var segmentCount = data.Payload.Length / maxSize;
+                var segmentSize = maxSize;
 
                 if (data.Payload.Length % maxSize != 0) {
                     // Distribute payload equally across all messages
@@ -201,8 +193,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="ct"></param>
         /// <returns></returns>
         public async Task<bool> TryCompleteOpenAsync(CancellationToken ct) {
-            if (_connection == null)
+            if (_connection == null) {
                 return false;
+            }
+
             try {
                 var stream = await _connection.OpenAsync(ct).ConfigureAwait(false);
 
@@ -284,7 +278,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="ct"></param>
         /// <returns></returns>
         private async Task TerminateConnectionAsync(CancellationToken ct) {
-            IConnection connection = _connection;
+            var connection = _connection;
             _connection = null;
 
             ProxyEventSource.Log.StreamClosing(this, null);
@@ -327,7 +321,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                     request, TimeSpan.FromSeconds(10), ct).ConfigureAwait(false);
                 ProxyEventSource.Log.LinkRemoved(this);
                 if (response != null) {
-                    SocketError errorCode = (SocketError)response.Error;
+                    var errorCode = (SocketError)response.Error;
                     if (errorCode != SocketError.Success &&
                         errorCode != SocketError.Timeout &&
                         errorCode != SocketError.Closed) {

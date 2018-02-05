@@ -5,7 +5,6 @@
 
 namespace System.Threading.Tasks {
     using System;
-    using Threading;
 
     public static class TaskToSync {
         /// <summary>

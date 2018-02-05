@@ -32,7 +32,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns></returns>
         public override void Close() {
             // Remove ourselves from the listener...
-            _provider._connectionMap.TryRemove(StreamId, out WebSocketConnection stream);
+            _provider._connectionMap.TryRemove(StreamId, out var stream);
         }
 
         protected override async Task CloseStreamAsync(ICodecStream<WebSocketStream> codec) {

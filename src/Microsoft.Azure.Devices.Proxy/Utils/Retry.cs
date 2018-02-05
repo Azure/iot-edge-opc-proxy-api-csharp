@@ -23,30 +23,22 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Default exponential policy with 20% jitter
         /// </summary>
-        public static Func<int, int> Exponential {
-            get {
-                return (k) => {
-                    Random r = new Random();
-                    int increment = (int)((Math.Pow(2, k) - 1) *
-                        r.Next((int)(BackoffDelta * 0.8), (int)(BackoffDelta * 1.2)));
-                    return (int)Math.Min(increment, MaxRetryDelay);
-                };
-            }
-        }
+        public static Func<int, int> Exponential => (k) => {
+            var r = new Random();
+            var increment = (int)((Math.Pow(2, k) - 1) *
+                r.Next((int)(BackoffDelta * 0.8), (int)(BackoffDelta * 1.2)));
+            return (int)Math.Min(increment, MaxRetryDelay);
+        };
 
         /// <summary>
         /// Default linear policy
         /// </summary>
-        public static Func<int, int> Linear {
-            get => (k) => k * BackoffDelta;
-        }
+        public static Func<int, int> Linear => (k) => k * BackoffDelta;
 
         /// <summary>
         /// No backoff - just wait backoff delta
         /// </summary>
-        public static Func<int, int> NoBackoff {
-            get => (k) => BackoffDelta;
-        }
+        public static Func<int, int> NoBackoff => (k) => BackoffDelta;
 
         /// <summary>
         /// Retries a piece of work
@@ -59,21 +51,27 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         public static async Task Do(CancellationToken ct, Func<Task> work,
             Func<Exception, bool> cont, Func<int, int> policy, int maxRetry) {
-            for (int k = 1; k <= maxRetry; k++) {
-                if (ct.IsCancellationRequested)
+            for (var k = 1; k <= maxRetry; k++) {
+                if (ct.IsCancellationRequested) {
                     throw new TaskCanceledException();
+                }
+
                 try {
                     await work().ConfigureAwait(false);
                     return;
                 }
                 catch (Exception ex) {
-                    if (!cont(ex))
+                    if (!cont(ex)) {
                         throw ProxyEventSource.Log.Rethrow(ex, work);
+                    }
+
                     ProxyEventSource.Log.Retry(work, k, ex);
                 }
-                int delay = policy(k);
-                if (delay == 0)
+                var delay = policy(k);
+                if (delay == 0) {
                     continue;
+                }
+
                 await Task.Delay(delay, ct).ConfigureAwait(false);
             }
             throw ProxyEventSource.Log.Timeout("Retry timeout exhausted.");
@@ -91,20 +89,26 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         public static async Task<T> Do<T>(CancellationToken ct, Func<Task<T>> work,
             Func<Exception, bool> cont, Func<int, int> policy, int maxRetry) {
-            for (int k = 1; k <= maxRetry; k++) {
-                if (ct.IsCancellationRequested)
+            for (var k = 1; k <= maxRetry; k++) {
+                if (ct.IsCancellationRequested) {
                     throw new TaskCanceledException();
+                }
+
                 try {
                     return await work().ConfigureAwait(false);
                 }
                 catch (Exception ex) {
-                    if (!cont(ex))
+                    if (!cont(ex)) {
                         throw ProxyEventSource.Log.Rethrow(ex, work);
+                    }
+
                     ProxyEventSource.Log.Retry(work, k, ex);
                 }
-                int delay = policy(k);
-                if (delay == 0)
+                var delay = policy(k);
+                if (delay == 0) {
                     continue;
+                }
+
                 await Task.Delay(delay, ct).ConfigureAwait(false);
             }
             throw ProxyEventSource.Log.Timeout("Retry timeout exhausted.");

@@ -81,9 +81,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// References as enumerable
         /// </summary>
-        public IEnumerable<Reference> References {
-            get => ReferenceSet;
-        }
+        public IEnumerable<Reference> References => ReferenceSet;
 
         /// <summary>
         /// Default constructor

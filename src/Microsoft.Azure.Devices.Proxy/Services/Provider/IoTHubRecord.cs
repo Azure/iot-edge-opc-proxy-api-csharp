@@ -73,18 +73,26 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             set {
                 this[_typeTag] = (int)value;
                 // No support for bit queries ...
-                if (0 == (value & NameRecordType.Proxy))
+                if (0 == (value & NameRecordType.Proxy)) {
                     this["proxy"] = null;
-                else
+                }
+                else {
                     this["proxy"] = 1;
-                if (0 == (value & NameRecordType.Host))
+                }
+
+                if (0 == (value & NameRecordType.Host)) {
                     this["host"] = null;
-                else
+                }
+                else {
                     this["host"] = 1;
-                if (0 == (value & NameRecordType.Link))
+                }
+
+                if (0 == (value & NameRecordType.Link)) {
                     this["link"] = null;
-                else
+                }
+                else {
                     this["link"] = 1;
+                }
             }
         }
 
@@ -156,15 +164,17 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// </summary>
         /// <param name="address"></param>
         public void AddReference(Reference address) {
-            if (References.Contains(address))
+            if (References.Contains(address)) {
                 return;
+            }
+
             var refs = _tags[_referencesTag] as JObject;
             if (refs == null) {
                 refs = new JObject();
                 _tags.Add(_referencesTag, refs);
             }
             if (!refs.TryGetValue(address.ToString(),
-                StringComparison.CurrentCultureIgnoreCase, out JToken val) ||
+                StringComparison.CurrentCultureIgnoreCase, out var val) ||
                 !val.ToString().Equals(address.ToString())) {
 
                 refs[address.ToString()] = address.ToString();
@@ -182,8 +192,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// </summary>
         /// <param name="address"></param>
         public void RemoveReference(Reference address) {
-            if (!References.Contains(address))
+            if (!References.Contains(address)) {
                 return;
+            }
+
             var refs = _tags[_referencesTag] as JObject;
             if (refs != null) {
 

@@ -57,8 +57,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// Tries to create a reference from a string
         /// </summary>
         public static bool TryParse(string addressString, out Reference address) {
-            Guid guid;
-            if (!Guid.TryParse(addressString, out guid)) {
+            if (!Guid.TryParse(addressString, out var guid)) {
                 address = null;
                 return false;
             }

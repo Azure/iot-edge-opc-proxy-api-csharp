@@ -7,7 +7,6 @@
 
 namespace Microsoft.Azure.Devices.Proxy {
     using System;
-    using System.Linq;
     using System.Runtime.Serialization;
     using System.Text;
 
@@ -81,7 +80,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         public string AsString() {
             var str = new StringBuilder();
-            for (int i = 0; i < Address.Length; i += 2) {
+            for (var i = 0; i < Address.Length; i += 2) {
                 if (i != 0) {
                     str.Append(":");
                 }
@@ -98,7 +97,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="parsed"></param>
         /// <returns></returns>
         public static bool TryParse(string address, out Inet6SocketAddress parsed) {
-            if (Reference.TryParse(address, out Reference reference)) {
+            if (Reference.TryParse(address, out var reference)) {
                 parsed = reference.ToSocketAddress() as Inet6SocketAddress;
             }
             else {
@@ -143,22 +142,20 @@ namespace Microsoft.Azure.Devices.Proxy {
                 // This is actually a proxy reference id
                 return AsReference().ToString();
             }
-            else {
-                var str = new StringBuilder();
-                if (Port != 0) {
-                    str.Append("[");
-                }
-                str.Append(AsString());
-                if (ScopeId != 0) {
-                    str.Append("/");
-                    str.Append(ScopeId);
-                }
-                if (Port != 0) {
-                    str.Append("]:");
-                    str.Append(Port);
-                }
-                return str.ToString();
+            var str = new StringBuilder();
+            if (Port != 0) {
+                str.Append("[");
             }
+            str.Append(AsString());
+            if (ScopeId != 0) {
+                str.Append("/");
+                str.Append(ScopeId);
+            }
+            if (Port != 0) {
+                str.Append("]:");
+                str.Append(Port);
+            }
+            return str.ToString();
         }
 
         public override ProxySocketAddress AsProxySocketAddress() =>

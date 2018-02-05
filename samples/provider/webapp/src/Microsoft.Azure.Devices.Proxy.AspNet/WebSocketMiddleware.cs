@@ -20,9 +20,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <summary>
         /// Exposes the new asp.net stream service on the default provider
         /// </summary>
-        public override IStreamService StreamService {
-            get => this;
-        }
+        public override IStreamService StreamService => this;
 
         internal ConcurrentDictionary<Reference, WebSocketConnection> _connectionMap =
             new ConcurrentDictionary<Reference, WebSocketConnection>();
@@ -49,8 +47,8 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             try {
                 if (context.WebSockets.IsWebSocketRequest && (!_secure || context.Request.IsHttps)) {
                     // Correlate the accepted socket to an open stream in our map
-                    if (Reference.TryParse(context.Request.Path.Value.Trim('/'), out Reference streamId)) {
-                        if (_connectionMap.TryGetValue(streamId, out WebSocketConnection connection)) {
+                    if (Reference.TryParse(context.Request.Path.Value.Trim('/'), out var streamId)) {
+                        if (_connectionMap.TryGetValue(streamId, out var connection)) {
                             var webSocket = await context.WebSockets.AcceptWebSocketAsync();
                             var server = connection.OpenAsync(new WebSocketStream(webSocket));
                             if (server != null) {
@@ -80,9 +78,10 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns></returns>
         public Task<IConnection> CreateConnectionAsync(Reference streamId,
             Reference remoteId, INameRecord proxy, CodecId encoding) {
-            var uri = new UriBuilder(_uri);
-            uri.Scheme = _secure ? "wss" : "ws";
-            uri.Path = streamId.ToString();
+            var uri = new UriBuilder(_uri) {
+                Scheme = _secure ? "wss" : "ws",
+                Path = streamId.ToString()
+            };
             var connection = new WebSocketConnection(this, streamId, remoteId, encoding,
                 ConnectionString.Create(uri.Uri, "proxy", "secret"));
             _connectionMap.AddOrUpdate(streamId, connection, (r, s) => connection);

@@ -73,8 +73,9 @@ namespace RemoteViewing.ServerExample
             var client = listener.AcceptTcpClient();
 
             // Set up a framebuffer and options.
-            var options = new VncServerSessionOptions();
-            options.AuthenticationMethod = AuthenticationMethod.Password;
+            var options = new VncServerSessionOptions {
+                AuthenticationMethod = AuthenticationMethod.Password
+            };
 
             // Create a session.
             Session = new VncServerSession();

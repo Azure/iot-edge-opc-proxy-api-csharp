@@ -4,17 +4,15 @@
 
 namespace Microsoft.Azure.Devices.Proxy.Provider {
     using System.IO;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Configuration;
     using Microsoft.AspNetCore.Hosting;
-    using Proxy;
     using System;
 
     /// <summary>
     /// Provider for websocket streaming based on Kestrel
     /// implementation
     /// </summary>
-    public class WebSocketProvider {
+    public static class WebSocketProvider {
 
         /// <summary>
         /// Create provider host from Configuration
@@ -36,8 +34,9 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             .Build();
 
             // Listen endpoint
-            var endpoint = new UriBuilder(url);
-            endpoint.Host = "*";
+            var endpoint = new UriBuilder(url) {
+                Host = "*"
+            };
 
             // Build web host
             new WebHostBuilder()
@@ -54,10 +53,11 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 });
             })
             .UseKestrel(options => {
-                options.NoDelay = true;
+#if NETSTANDARD1_3
                 if (url.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase)) {
                     options.UseHttps("testCert.pfx", "testPassword");
                 }
+                options.NoDelay = true;
                 options.UseConnectionLogging();
                 if (config["threadCount"] != null) {
                     options.ThreadCount = int.Parse(config["threadCount"]);
@@ -68,6 +68,20 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 if (options.ThreadCount == 0) {
                     options.ThreadCount = 1;
                 }
+#else
+                if (url.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase)) {
+                    // Verbose
+                    options.Listen(System.Net.IPAddress.Any, 443, listenOptions => {
+                        listenOptions.NoDelay = true;
+                        listenOptions.UseConnectionLogging();
+                        listenOptions.UseHttps("testCert.pfx", "testPassword");
+                    });
+                }
+                options.Listen(System.Net.IPAddress.Any, 80, listenOptions => {
+                    listenOptions.NoDelay = true;
+                    listenOptions.UseConnectionLogging();
+                });
+#endif
             })
             .UseUrls(endpoint.ToString())
             .Build()

@@ -47,9 +47,8 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             if (realUri != null) {
                 await ServeAsync(context, realUri, val => {
                     // Rewrite uris
-                    Uri parsed;
                     try {
-                        if (Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out parsed)) {
+                        if (Uri.TryCreate(val, UriKind.RelativeOrAbsolute, out var parsed)) {
                             var mappedUri = new UriBuilder();
                             // Handle relative paths...
                             if (!parsed.IsAbsoluteUri || string.IsNullOrEmpty(parsed.Scheme)) {
@@ -97,8 +96,8 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             // Connect a proxy socket to http endpoint
 
             TcpClient client = null;
-            string host = uri.Host;
-            string res = uri.PathAndQuery;
+            var host = uri.Host;
+            var res = uri.PathAndQuery;
             Stream stream = null;
             try {
                 while (true) {
@@ -115,22 +114,16 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     // Read from stream the response back.
                     var target = await ReadAsync(stream,
                         context.Response, host, rewrite).ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(target))
+                    if (string.IsNullOrEmpty(target)) {
                         break;
+                    }
 
                     // Handle redirect to new target - 
-                    Uri redirect;
-                    if (Uri.TryCreate(target, UriKind.RelativeOrAbsolute, out redirect)) {
+                    if (Uri.TryCreate(target, UriKind.RelativeOrAbsolute, out var redirect)) {
                         res = redirect.PathAndQuery;
                         if (redirect.IsAbsoluteUri) {
                             // if it is absolute, reconnect to the new host
                             host = redirect.Host;
-                        }
-                        else {
-                    //   // if target is relative, host is the same - see if we can reuse...
-                    //   if (context.Response.Headers["Connection"] == "keep-alive") {
-                    //       continue;
-                    //   }
                         }
                     }
                     stream.Dispose();
@@ -197,8 +190,9 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             }
 
             var uri = new UriBuilder(request.IsHttps ? "https" : "http",
-                target, port, path);
-            uri.Query = request.QueryString.Value;
+                target, port, path) {
+                Query = request.QueryString.Value
+            };
             return uri.Uri;
         }
 
@@ -239,7 +233,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 foreach (var kv in request.Headers) {
                     if (kv.Key.Equals("Accept-Encoding",
                         StringComparison.CurrentCultureIgnoreCase)) {
-                        string filtered = "";
+                        var filtered = "";
                         foreach (var enc in kv.Value.ToString().Split(',')) {
                             var val = enc.ToLowerInvariant().Trim();
                             if (val.Equals("gzip") ||
@@ -284,7 +278,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             // Now read response back and write out to response
             var reader = new HttpResponseReader(stream);
 
-            bool isChunked = false;
+            var isChunked = false;
             string contentEncoding = null;
             var headers = new HeaderDictionary();
 
@@ -296,7 +290,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             }
             Console.WriteLine(s);
 
-            int statusCode = int.Parse(s.Split(' ')[1]);
+            var statusCode = int.Parse(s.Split(' ')[1]);
             string target = null;
             while (true) {
                 s = await reader.ReadLineAsync().ConfigureAwait(false);
@@ -352,22 +346,22 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 response.Headers.Add(entry.Key, entry.Value);
             }
 
-            Encoding encoder;
             if (response.StatusCode == StatusCodes.Status204NoContent ||
                 response.StatusCode == StatusCodes.Status205ResetContent ||
-                response.StatusCode == StatusCodes.Status304NotModified){
+                response.StatusCode == StatusCodes.Status304NotModified) {
                 response.ContentLength = 0;
                 await response.Body.FlushAsync();
             }
-            else if (IsTextContent(response.ContentType, out encoder)) {
-                
+            else if (IsTextContent(response.ContentType, out var encoder)) {
+
                 // Remember host as fallback
                 response.Cookies.Append("host", host);
 
                 await reader.ReadBodyAsync(response, isChunked, (body, len) => {
                     if (!string.IsNullOrWhiteSpace(contentEncoding)) {
                         var mem = new MemoryStream(body, 0, len);
-                        /**/ if (contentEncoding.Equals("gzip")) {
+                        /**/
+                        if (contentEncoding.Equals("gzip")) {
                             using (var gzip = new GZipStream(mem,
                                 CompressionMode.Decompress, false)) {
                                 s = gzip.ToString(encoder);
@@ -396,7 +390,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     // 2. find any href="/ and src="/ and rewrite content.
                     s = _rels.Replace(s, (f) => {
                         var val = f.Groups["url"].Value.TrimStart().TrimStart('.');
-                        if (!val.StartsWith("/", StringComparison.Ordinal) || 
+                        if (!val.StartsWith("/", StringComparison.Ordinal) ||
                             val.StartsWith("//", StringComparison.Ordinal)) {
                             return f.Value;
                         }
@@ -409,7 +403,8 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                     if (!string.IsNullOrWhiteSpace(contentEncoding)) {
 
                         var mem = new MemoryStream();
-                        /**/ if (contentEncoding.Equals("gzip")) {
+                        /**/
+                        if (contentEncoding.Equals("gzip")) {
                             using (var gzip = new GZipStream(mem,
                                 CompressionMode.Compress, true)) {
                                 gzip.Write(body, 0, body.Length);
@@ -481,7 +476,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             }
             subtype = subtype.Trim();
 
-            bool isText = toplevel.Equals("text");
+            var isText = toplevel.Equals("text");
             if (!isText) {
                 if (toplevel.Equals("application") &&
                     (subtype.Equals("json") ||
@@ -523,7 +518,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             /// <returns></returns>
             internal async Task<string> ReadLineAsync() {
                 var buf = new byte[1024];
-                int offset = 0;
+                var offset = 0;
                 while(true) {
                     var read = await _stream.ReadAsync(buf, offset, 1).ConfigureAwait(false);
                     if (read != 1) {
@@ -576,13 +571,15 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                 Func<byte[], int, byte[]> filter) {
                 // Try to read as much as possible
                 var body = new byte[1024];
-                int offset = 0;
+                var offset = 0;
                 try {
                     while (true) {
-                        int read = await _stream.ReadAsync(body, offset,
+                        var read = await _stream.ReadAsync(body, offset,
                             body.Length - offset).ConfigureAwait(false);
-                        if (read == 0)
+                        if (read == 0) {
                             break;
+                        }
+
                         offset += read;
                         if (offset == body.Length) {
                             // Grow
@@ -663,7 +660,7 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
             private async Task<byte[]> ReadBodyAsync(int contentLength,
                 Func<byte[], int, byte[]> filter) {
                 var buf = new byte[contentLength];
-                int offset = 0;
+                var offset = 0;
                 while (offset < buf.Length) {
                     offset += await _stream.ReadAsync(buf, offset,
                         buf.Length - offset).ConfigureAwait(false);
@@ -701,12 +698,14 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
         public static string ToString(this Stream stream, Encoding encoder) {
             // Try to read as much as possible
             var body = new byte[1024];
-            int offset = 0;
+            var offset = 0;
             try {
                 while (true) {
-                    int read = stream.Read(body, offset, body.Length - offset);
-                    if (read == 0)
+                    var read = stream.Read(body, offset, body.Length - offset);
+                    if (read == 0) {
                         break;
+                    }
+
                     offset += read;
                     if (offset == body.Length) {
                         // Grow

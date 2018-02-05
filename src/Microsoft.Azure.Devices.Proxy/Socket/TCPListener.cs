@@ -75,8 +75,10 @@ namespace Microsoft.Azure.Devices.Proxy {
         //
         // Async accept operation
         //
-        public Task<TcpClient> AcceptTcpClientAsync() =>
-            Server.AcceptAsync().ContinueWith(t => new TcpClient(t.Result));
+        public async Task<TcpClient> AcceptTcpClientAsync() {
+            var result = await Server.AcceptAsync().ConfigureAwait(false);
+            return new TcpClient(result);
+        }
 
         //
         // Begin accept

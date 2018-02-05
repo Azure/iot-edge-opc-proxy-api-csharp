@@ -77,7 +77,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             service.Write.SendAsync(Tuple.Create(record, NameServiceOperation.Remove), ct);
 
         /// <summary>
-        /// Match record against addres and type
+        /// Match record against address and type
         /// </summary>
         /// <param name="record"></param>
         /// <param name="address"></param>
@@ -91,7 +91,36 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         /// <summary>
-        /// Match record against addres and type
+        /// Matches proxy records using optional host as guidance for limiting results.
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="host"></param>
+        /// <returns></returns>
+        public static bool IsProxyForHost(this INameRecord record, SocketAddress host) {
+            if (!record.Type.HasFlag(NameRecordType.Proxy)) {
+                return false;
+            }
+            if (host is ProxySocketAddress address) {
+                if (!string.IsNullOrEmpty(address.Domain)) {
+                    if (string.IsNullOrEmpty(record.Domain)) {
+                        // Proxy without domain, do not use it.
+                        return false;
+                    }
+                    if (address.Domain == record.Domain) {
+                        // Same domain
+                        return true;
+                    }
+                    // If record domain is a super domain of the address one, also match ok
+                    return address.Domain.EndsWith("." + record.Domain, 
+                        StringComparison.CurrentCultureIgnoreCase);
+                }
+                // No domain to match, thus match all.
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Match record against address and type
         /// </summary>
         /// <param name="record"></param>
         /// <param name="addresses"></param>

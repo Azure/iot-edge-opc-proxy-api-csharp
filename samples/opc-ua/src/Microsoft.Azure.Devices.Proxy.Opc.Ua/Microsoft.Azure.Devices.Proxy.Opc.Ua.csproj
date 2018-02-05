@@ -3,9 +3,10 @@
   <PropertyGroup>
     <Description>Implements a custom transport for the OPC Foundation reference stack using Microsoft Azure Device Proxy Service API.</Description>
     <AssemblyTitle>Microsoft Azure Devices Opc-UA Reference Stack Proxy Transport</AssemblyTitle>
-    <VersionPrefix>1.0.3</VersionPrefix>
+    <VersionPrefix>1.0.4</VersionPrefix>
     <Authors>microsoft</Authors>
-    <TargetFrameworks>netstandard1.4</TargetFrameworks>
+    <TargetFrameworks>netstandard1.4;netstandard2.0</TargetFrameworks>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
     <NoWarn>$(NoWarn);1591;1734</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -17,7 +18,6 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/iot-edge-opc-proxy/master/LICENSE</PackageLicenseUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryUrl>https://github.com/Azure/iot-edge-opc-proxy</RepositoryUrl>
-    <NetStandardImplicitPackageVersion>1.6.1</NetStandardImplicitPackageVersion>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>true</GenerateAssemblyConfigurationAttribute>
@@ -31,11 +31,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="0.4.1" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.3.350.6" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Symbols" Version="1.3.350.6" />
   </ItemGroup>
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Signed' ">

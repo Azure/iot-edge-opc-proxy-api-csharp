@@ -16,9 +16,7 @@ namespace Microsoft.Azure.Devices.Proxy {
     public class UnixSocketAddress : SocketAddress, IEquatable<UnixSocketAddress> {
 
         [DataMember(Name = "family", Order = 1)]
-        public override AddressFamily Family {
-            get => AddressFamily.Unix;
-        }
+        public override AddressFamily Family => AddressFamily.Unix;
 
         /// <summary>
         /// Path to the unix pipe

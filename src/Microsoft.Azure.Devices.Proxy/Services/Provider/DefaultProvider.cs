@@ -20,7 +20,6 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// Initialize default provider
         /// </summary>
         /// <param name="iothub"></param>
-        /// <param name="registryRefresh"></param>
         public DefaultProvider(ConnectionString iothub) {
             if (iothub == null) {
                 throw new ArgumentException("You must provide the iothubowner connection " +
@@ -40,7 +39,6 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// Initialize default provider
         /// </summary>
         /// <param name="iothub"></param>
-        /// <param name="registryRefresh"></param>
         public DefaultProvider(string iothub) {
             if (string.IsNullOrEmpty(iothub)) {
                 iothub = Environment.GetEnvironmentVariable("_HUB_CS");

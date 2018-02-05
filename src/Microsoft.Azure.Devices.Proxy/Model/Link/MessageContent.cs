@@ -29,38 +29,56 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="content"></param>
         /// <returns></returns>
         public static uint GetId(IMessageContent content) {
-            /**/ if (content is DataMessage)
+            /**/
+            if (content is DataMessage) {
                 return Data;
-            else if (content is PingRequest)
+            }
+
+            if (content is PingRequest) {
                 return Ping;
-            else if (content is PollRequest)
+            }
+            else if (content is PollRequest) {
                 return Poll;
-            else if (content is PollResponse)
+            }
+            else if (content is PollResponse) {
                 return Poll;
-            else if (content is PingResponse)
+            }
+            else if (content is PingResponse) {
                 return Ping;
-            else if (content is LinkRequest)
+            }
+            else if (content is LinkRequest) {
                 return Link;
-            else if (content is LinkResponse)
+            }
+            else if (content is LinkResponse) {
                 return Link;
-            else if (content is SetOptRequest)
+            }
+            else if (content is SetOptRequest) {
                 return SetOpt;
-            else if (content is SetOptResponse)
+            }
+            else if (content is SetOptResponse) {
                 return SetOpt;
-            else if (content is GetOptRequest)
+            }
+            else if (content is GetOptRequest) {
                 return GetOpt;
-            else if (content is GetOptResponse)
+            }
+            else if (content is GetOptResponse) {
                 return GetOpt;
-            else if (content is OpenRequest)
+            }
+            else if (content is OpenRequest) {
                 return Open;
-            else if (content is OpenResponse)
+            }
+            else if (content is OpenResponse) {
                 return Open;
-            else if (content is CloseRequest)
+            }
+            else if (content is CloseRequest) {
                 return Close;
-            else if (content is CloseResponse)
+            }
+            else if (content is CloseResponse) {
                 return Close;
-            else
+            }
+            else {
                 return Custom;
+            }
         }
 
         /// <summary>
@@ -79,24 +97,39 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <param name="isResponse"></param>
         /// <returns></returns>
         public static Type TypeOf(uint type, bool isResponse) {
-            if (type == Ping)
+            if (type == Ping) {
                 return isResponse ? typeof(PingResponse) : typeof(PingRequest);
-            if (type == Link)
+            }
+
+            if (type == Link) {
                 return isResponse ? typeof(LinkResponse) : typeof(LinkRequest);
-            if (type == SetOpt)
+            }
+
+            if (type == SetOpt) {
                 return isResponse ? typeof(SetOptResponse) : typeof(SetOptRequest);
-            if (type == GetOpt)
+            }
+
+            if (type == GetOpt) {
                 return isResponse ? typeof(GetOptResponse) : typeof(GetOptRequest);
-            if (type == Open)
+            }
+
+            if (type == Open) {
                 return isResponse ? typeof(OpenResponse) : typeof(OpenRequest);
-            if (type == Close)
+            }
+
+            if (type == Close) {
                 return isResponse ? typeof(CloseResponse) : typeof(CloseRequest);
-            if (type == Poll)
+            }
+
+            if (type == Poll) {
                 return isResponse ? typeof(PollResponse) : typeof(PollRequest);
-            if (type == Data)
+            }
+
+            if (type == Data) {
                 return typeof(DataMessage);
-            else
-                return null;
+            }
+
+            return null;
         }
     }
 }

@@ -7,17 +7,11 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
     using System;
 
     public class NullProvider : IProvider {
-        public IRemotingService ControlChannel {
-            get => throw new NotImplementedException();
-        }
+        public IRemotingService ControlChannel => throw new NotImplementedException();
 
-        public INameService NameService {
-            get => throw new NotImplementedException();
-        }
+        public INameService NameService => throw new NotImplementedException();
 
-        public IStreamService StreamService {
-            get => throw new NotImplementedException();
-        }
+        public IStreamService StreamService => throw new NotImplementedException();
 
         /// <summary>
         /// Initialize default provider

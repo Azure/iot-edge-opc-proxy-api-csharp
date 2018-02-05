@@ -21,30 +21,22 @@ namespace Microsoft.Azure.Devices.Proxy {
         //
         // Returns a socket file descriptor or handle
         //
-        public IntPtr Handle {
-            get { return (IntPtr)_internal.Id.GetHashCode(); }
-        }
+        public IntPtr Handle => (IntPtr)_internal.Id.GetHashCode();
 
         //
         // Gets the socket's address family.
         //
-        public AddressFamily AddressFamily {
-            get { return _internal.Info.Family; }
-        }
+        public AddressFamily AddressFamily => _internal.Info.Family;
 
         //
         // Gets the socket's socketType.
         //
-        public SocketType SocketType {
-            get { return _internal.Info.Type; }
-        }
+        public SocketType SocketType => _internal.Info.Type;
 
         //
         // Gets the socket's protocol socketType.
         //
-        public ProtocolType ProtocolType {
-            get { return _internal.Info.Protocol; }
-        }
+        public ProtocolType ProtocolType => _internal.Info.Protocol;
 
         //
         // Returns whether this socket is bound to a port
@@ -124,30 +116,24 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <summary>
         /// Returns the address of the proxy the socket is connected through
         /// </summary>
-        public SocketAddress LocalEndPoint {
-            get { return _internal?.ProxyAddress; }
-        }
+        public SocketAddress LocalEndPoint => _internal?.ProxyAddress;
 
         /// <summary>
         /// Returns the address the proxy itself is connected to (peer)
         /// </summary>
-        public SocketAddress RemoteEndPoint {
-            get { return _internal?.PeerAddress; }
-        }
+        public SocketAddress RemoteEndPoint => _internal?.PeerAddress;
 
         /// <summary>
         /// Returns the interface the proxy bound the remote connection to.
         /// </summary>
-        public SocketAddress InterfaceEndPoint {
-            get { return _internal?.LocalAddress; }
-        }
+        public SocketAddress InterfaceEndPoint => _internal?.LocalAddress;
 
         #region Connect
 
         //
         // Set/get the send timeout
         //
-        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(30);
+        public TimeSpan ConnectTimeout { get; set; } = TimeSpan.FromSeconds(20);
 
         //
         // Opens the socket and links as active
@@ -559,7 +545,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (!Connected) {
                 throw new SocketException("Not connected");
             }
-            int sent = 0;
+            var sent = 0;
             foreach (var buffer in buffers) {
                 sent += await SendAsync(buffer, ct).ConfigureAwait(false);
             }
@@ -594,7 +580,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             else {
                 throw new ArgumentException("Buffer");
             }
-            Task t2 = t1.ContinueWith(t => {
+            var t2 = t1.ContinueWith(t => {
                 try {
                     e.BytesTransferred = t.Result;
                     e.SocketError = SocketError.Success;
@@ -735,7 +721,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 throw new ArgumentNullException(nameof(buffers));
             }
 
-            int sent = 0;
+            var sent = 0;
             foreach (var buffer in buffers) {
                 sent += await SendToAsync(buffer, endpoint, ct).ConfigureAwait(false);
             }
@@ -770,7 +756,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             else {
                 throw new ArgumentException("Buffer");
             }
-            Task t2 = t1.ContinueWith(t => {
+            var t2 = t1.ContinueWith(t => {
                 try {
                     e.BytesTransferred = t.Result;
                     e.SocketError = SocketError.Success;
@@ -890,11 +876,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         //
         // Gets the amount of data that can be read from input
         //
-        public int Available {
-            get {
-                return (int)GetSocketOption(SocketOption.Available);
-            }
-        }
+        public int Available => (int)GetSocketOption(SocketOption.Available);
 
         //
         //  Set/get the timeout for receive calls
@@ -948,7 +930,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             if (!Connected) {
                 throw new SocketException("Not connected");
             }
-            int received = 0;
+            var received = 0;
             foreach (var buffer in buffers) {
                 received += await ReceiveAsync(buffer, ct).ConfigureAwait(false);
             }
@@ -1007,7 +989,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             else {
                 throw new ArgumentException("Buffer");
             }
-            Task t2 = t1.ContinueWith(t => {
+            var t2 = t1.ContinueWith(t => {
                 try {
                     e.BytesTransferred = t.Result;
                     e.SocketError = SocketError.Success;
@@ -1150,7 +1132,7 @@ namespace Microsoft.Azure.Devices.Proxy {
             else {
                 throw new ArgumentException("Buffer");
             }
-            Task t2 = t1.ContinueWith(t => {
+            var t2 = t1.ContinueWith(t => {
                 try {
                     e.Endpoint = t.Result.Item1;
                     e.BytesTransferred = t.Result.Item2;

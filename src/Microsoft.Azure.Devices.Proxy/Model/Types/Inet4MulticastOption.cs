@@ -16,9 +16,7 @@ namespace Microsoft.Azure.Devices.Proxy {
     public class Inet4MulticastOption : Poco<Inet4MulticastOption>, IMulticastOption {
 
         [DataMember(Name = "family", Order = 1)]
-        public AddressFamily Family {
-            get => AddressFamily.InterNetwork;
-        }
+        public AddressFamily Family => AddressFamily.InterNetwork;
 
         /// <summary>
         /// Interface to use

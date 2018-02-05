@@ -17,8 +17,7 @@ namespace MsgPack {
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public Serializer<T> Get<T>() {
-            object serializer;
-            if (!_cache.TryGetValue(typeof(T), out serializer)) {
+            if (!_cache.TryGetValue(typeof(T), out var serializer)) {
                 serializer = new ReflectionSerializer<T>();
                 _cache.Add(typeof(T), serializer);
             }

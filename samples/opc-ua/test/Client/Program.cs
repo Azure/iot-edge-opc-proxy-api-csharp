@@ -13,19 +13,17 @@
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Opc.Ua.Bindings;
 using Opc.Ua.Bindings.Proxy;
-using System.Security.Cryptography.X509Certificates;
 
 namespace NetCoreConsoleClient {
 
     public class Program {
 
-        private const String _clientName = ".Net Core OPC UA Console Client";
+        private const string _clientName = ".Net Core OPC UA Console Client";
 
         enum Op {
             Browse, Reconnect, Subscribe, All, None
@@ -34,12 +32,12 @@ namespace NetCoreConsoleClient {
         public static void Main(string[] args) {
             Console.WriteLine(_clientName);
             var endpointURL = "opc.tcp://" + Utils.GetHostName() + ":51210/UA/SampleServer";
-            Op op = Op.None;
-            int count = 0;
+            var op = Op.None;
+            var count = 0;
 
             // Parse command line
             try {
-                for (int i = 0; i < args.Length; i++) {
+                for (var i = 0; i < args.Length; i++) {
                     switch (args[i]) {
                         case "--all":
                             if (op != Op.None) {
@@ -196,12 +194,12 @@ Operations (Mutually exclusive):
 
             await config.Validate(ApplicationType.Client);
 
-            bool haveAppCertificate = config.SecurityConfiguration.ApplicationCertificate.Certificate != null;
+            var haveAppCertificate = config.SecurityConfiguration.ApplicationCertificate.Certificate != null;
 
             if (!haveAppCertificate) {
                 Console.WriteLine("    INFO: Creating new application certificate: {0}", config.ApplicationName);
 
-                X509Certificate2 certificate = CertificateFactory.CreateCertificate(
+                var certificate = CertificateFactory.CreateCertificate(
                     config.SecurityConfiguration.ApplicationCertificate.StoreType,
                     config.SecurityConfiguration.ApplicationCertificate.StorePath,
                     null,
@@ -235,11 +233,11 @@ Operations (Mutually exclusive):
                 Console.WriteLine("    WARN: missing application certificate, using unsecure connection.");
             }
 
-            int reconnectLoops = op == Op.All ? 1 : count;
-            for (int i = 1; i <= reconnectLoops; i++) {
+            var reconnectLoops = op == Op.All ? 1 : count;
+            for (var i = 1; i <= reconnectLoops; i++) {
 
                 Console.WriteLine("2 - Discover endpoints of {0}.", endpointURL);
-                Uri endpointURI = new Uri(endpointURL);
+                var endpointURI = new Uri(endpointURL);
                 var endpointCollection = DiscoverEndpoints(config, endpointURI, 10);
                 var selectedEndpoint = SelectUaTcpEndpoint(endpointCollection, haveAppCertificate);
                 Console.WriteLine("    Selected endpoint uses: {0}",
@@ -253,12 +251,10 @@ Operations (Mutually exclusive):
 
                 if (op == Op.All || op == Op.Browse) {
                     Console.WriteLine("4 - Browse the OPC UA server namespace.");
-                    int j = 0;
+                    var j = 0;
 
                     while (true) {
-                        Stopwatch w = Stopwatch.StartNew();
-                        byte[] continuationPoint;
-                        ReferenceDescriptionCollection references;
+                        var w = Stopwatch.StartNew();
 
                         var stack = new Stack<Tuple<string, ReferenceDescription>>();
                         session.Browse(
@@ -270,8 +266,8 @@ Operations (Mutually exclusive):
                             ReferenceTypeIds.HierarchicalReferences,
                             true,
                             (uint)NodeClass.Variable | (uint)NodeClass.Object | (uint)NodeClass.Method,
-                            out continuationPoint,
-                            out references);
+                            out var continuationPoint,
+                            out var references);
 
                         Console.WriteLine(" DisplayName, BrowseName, NodeClass");
                         references.Reverse();
@@ -301,8 +297,9 @@ Operations (Mutually exclusive):
                                 $"{browsed.Item2.DisplayName}, {browsed.Item2.BrowseName}, {browsed.Item2.NodeClass}");
                         }
                         Console.WriteLine($"   ....        took {w.ElapsedMilliseconds} ms...");
-                        if (++j <= count)
+                        if (++j <= count) {
                             break;
+                        }
 
                         // Reconnect
                         session.Close();
@@ -364,14 +361,14 @@ Operations (Mutually exclusive):
         private static EndpointDescriptionCollection DiscoverEndpoints(ApplicationConfiguration config,
             Uri discoveryUrl, int timeout) {
             // use a short timeout.
-            EndpointConfiguration configuration = EndpointConfiguration.Create(config);
+            var configuration = EndpointConfiguration.Create(config);
             configuration.OperationTimeout = timeout;
 
-            using (DiscoveryClient client = DiscoveryClient.Create(
+            using (var client = DiscoveryClient.Create(
                 discoveryUrl,
                 EndpointConfiguration.Create(config))) {
                 try {
-                    EndpointDescriptionCollection endpoints = client.GetEndpoints(null);
+                    var endpoints = client.GetEndpoints(null);
                     ReplaceLocalHostWithRemoteHost(endpoints, discoveryUrl);
                     return endpoints;
                 }
@@ -386,7 +383,7 @@ Operations (Mutually exclusive):
         private static EndpointDescription SelectUaTcpEndpoint(EndpointDescriptionCollection endpointCollection,
             bool haveCert) {
             EndpointDescription bestEndpoint = null;
-            foreach (EndpointDescription endpoint in endpointCollection) {
+            foreach (var endpoint in endpointCollection) {
                 if (endpoint.TransportProfileUri == Profiles.UaTcpTransport) {
                     if (bestEndpoint == null ||
                         haveCert && (endpoint.SecurityLevel > bestEndpoint.SecurityLevel) ||
@@ -399,10 +396,10 @@ Operations (Mutually exclusive):
         }
 
         private static void ReplaceLocalHostWithRemoteHost(EndpointDescriptionCollection endpoints, Uri discoveryUrl) {
-            foreach (EndpointDescription endpoint in endpoints) {
+            foreach (var endpoint in endpoints) {
                 endpoint.EndpointUrl = Utils.ReplaceLocalhost(endpoint.EndpointUrl, discoveryUrl.DnsSafeHost);
-                StringCollection updatedDiscoveryUrls = new StringCollection();
-                foreach (string url in endpoint.Server.DiscoveryUrls) {
+                var updatedDiscoveryUrls = new StringCollection();
+                foreach (var url in endpoint.Server.DiscoveryUrls) {
                     updatedDiscoveryUrls.Add(Utils.ReplaceLocalhost(url, discoveryUrl.DnsSafeHost));
                 }
                 endpoint.Server.DiscoveryUrls = updatedDiscoveryUrls;

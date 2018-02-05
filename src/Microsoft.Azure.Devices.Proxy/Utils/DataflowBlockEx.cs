@@ -59,7 +59,7 @@ namespace System.Threading.Tasks.Dataflow {
                 TInput messageValue, ISourceBlock<TInput> source, bool consumeToAccept) =>
                 _target.OfferMessage(messageHeader, messageValue, source, consumeToAccept);
 
-            public Task Completion { get => _source.Completion; }
+            public Task Completion => _source.Completion;
 
             public IDisposable LinkTo(ITargetBlock<TOutput> target, DataflowLinkOptions linkOptions) =>
                 _source.LinkTo(target, linkOptions);
@@ -67,7 +67,7 @@ namespace System.Threading.Tasks.Dataflow {
             public override string ToString() => _source.ToString();
 
             public TOutput ConsumeMessage(DataflowMessageHeader messageHeader,
-                ITargetBlock<TOutput> target, out Boolean messageConsumed) =>
+                ITargetBlock<TOutput> target, out bool messageConsumed) =>
                 _source.ConsumeMessage(messageHeader, target, out messageConsumed);
 
             public bool ReserveMessage(DataflowMessageHeader messageHeader, ITargetBlock<TOutput> target) =>

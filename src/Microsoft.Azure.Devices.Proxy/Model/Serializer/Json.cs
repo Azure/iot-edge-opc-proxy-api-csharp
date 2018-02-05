@@ -19,7 +19,7 @@ namespace Microsoft.Azure.Devices.Proxy {
 
         protected override JsonProperty CreateProperty(MemberInfo member,
             MemberSerialization memberSerialization) {
-            JsonProperty property = base.CreateProperty(member, memberSerialization);
+            var property = base.CreateProperty(member, memberSerialization);
 
             var dataMember = member.GetCustomAttribute<DataMemberAttribute>();
             property.ShouldSerialize = (i) => {
@@ -30,7 +30,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         protected override JsonContract CreateContract(Type objectType) {
-            JsonContract contract = base.CreateContract(objectType);
+            var contract = base.CreateContract(objectType);
             /**/ if (typeof(Reference).IsAssignableFrom(objectType)) {
                 contract.Converter = new ReferenceConverter();
             }
@@ -58,19 +58,12 @@ namespace Microsoft.Azure.Devices.Proxy {
 
         class MessageReferencePlaceHolder : IMessageContent {
             public Message Ref { get; set; }
-
-            public IMessageContent Clone() {
-                throw new NotImplementedException();
-            }
-            public void Dispose() {
-                throw new NotImplementedException();
-            }
+            public IMessageContent Clone() => throw new NotImplementedException();
+            public void Dispose() => throw new NotImplementedException();
         }
 
         class MessageConverter : JsonConverter {
-            public override bool CanConvert(Type objectType) {
-                return false;
-            }
+            public override bool CanConvert(Type objectType) => false;
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
                 var message = Message.Get();
@@ -84,25 +77,21 @@ namespace Microsoft.Azure.Devices.Proxy {
             }
 
             public override void WriteJson(JsonWriter writer, object value,
-                JsonSerializer serializer) {
-                throw new NotImplementedException();
-            }
-            public override bool CanWrite {
-                get { return false; }
-            }
+                JsonSerializer serializer) => throw new NotImplementedException();
+            public override bool CanWrite => false;
         }
 
         class MessageContentConverter : JsonConverter {
-            public override bool CanConvert(Type objectType) {
-                return false;
-            }
+            public override bool CanConvert(Type objectType) => false;
             private object Deserialize(Type t, JsonReader reader, JsonSerializer serializer) {
                 var content = Activator.CreateInstance(t);
 
                 // TODO: Create empty
 
-                if (reader.TokenType != JsonToken.Null)
+                if (reader.TokenType != JsonToken.Null) {
                     serializer.Populate(reader, content);
+                }
+
                 return content;
             }
             public override object ReadJson(JsonReader reader, Type objectType,
@@ -111,12 +100,9 @@ namespace Microsoft.Azure.Devices.Proxy {
                 return Deserialize(MessageContent.TypeOf(reference.TypeId,
                     reference.IsResponse), reader, serializer);
             }
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
-                throw new NotImplementedException();
-            }
-            public override bool CanWrite {
-                get { return false; }
-            }
+            public override void WriteJson(JsonWriter writer, object value, 
+                JsonSerializer serializer) => throw new NotImplementedException();
+            public override bool CanWrite => false;
         }
 
         class VoidConverter : MessageContentConverter {
@@ -124,15 +110,11 @@ namespace Microsoft.Azure.Devices.Proxy {
                 object value, JsonSerializer serializer) {
                 writer.WriteNull();
             }
-            public override bool CanWrite {
-                get { return true; }
-            }
+            public override bool CanWrite => true;
         }
 
         class ReferenceConverter : JsonConverter {
-            public override bool CanConvert(Type objectType) {
-                return false;
-            }
+            public override bool CanConvert(Type objectType) => false;
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
                 Reference address = null;
@@ -143,10 +125,12 @@ namespace Microsoft.Azure.Devices.Proxy {
                             reader.Value.ToString().Equals("id",
                                 StringComparison.CurrentCultureIgnoreCase)) {
                             reader.Read();
-                            if (reader.TokenType == JsonToken.String)
+                            if (reader.TokenType == JsonToken.String) {
                                 address = Reference.Parse(reader.Value.ToString());
-                            else
+                            }
+                            else {
                                 throw new InvalidDataContractException();
+                            }
                         }
                     } while (reader.TokenType != JsonToken.EndObject);
                 }
@@ -168,14 +152,11 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         class SocketAddressConverter : JsonConverter {
-            public override bool CanConvert(Type objectType) {
-                return false;
-            }
-
+            public override bool CanConvert(Type objectType) => false;
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
-                JObject jsonObject = JObject.Load(reader);
-                AddressFamily family = (AddressFamily)jsonObject.Value<int>("family");
+                var jsonObject = JObject.Load(reader);
+                var family = (AddressFamily)jsonObject.Value<int>("family");
                 switch(family) {
                     case AddressFamily.Unspecified:
                         return new AnySocketAddress();
@@ -192,18 +173,12 @@ namespace Microsoft.Azure.Devices.Proxy {
                 }
             }
             public override void WriteJson(JsonWriter writer, object value,
-                JsonSerializer serializer) {
-                throw new NotImplementedException();
-            }
-            public override bool CanWrite {
-                get { return false; }
-            }
+                JsonSerializer serializer) => throw new NotImplementedException();
+            public override bool CanWrite => false;
         }
 
         class MulticastOptionConverter : JsonConverter {
-            public override bool CanConvert(Type objectType) {
-                return false;
-            }
+            public override bool CanConvert(Type objectType) => false;
 
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
@@ -219,58 +194,43 @@ namespace Microsoft.Azure.Devices.Proxy {
                 }
             }
             public override void WriteJson(JsonWriter writer, object value,
-                JsonSerializer serializer) {
-                throw new NotImplementedException();
-            }
-            public override bool CanWrite {
-                get { return false; }
-            }
+                JsonSerializer serializer) => throw new NotImplementedException();
+            public override bool CanWrite => false;
         }
 
         class PropertyConverter : JsonConverter {
-            public override bool CanConvert(Type objectType) {
-                return false;
-            }
+            public override bool CanConvert(Type objectType) => false;
 
             public override object ReadJson(JsonReader reader, Type objectType,
                 object existingValue, JsonSerializer serializer) {
-                JObject jsonObject = JObject.Load(reader);
-                uint type = jsonObject.Value<uint>("type");
+                var jsonObject = JObject.Load(reader);
+                var type = jsonObject.Value<uint>("type");
                 if (type == (uint)SocketOption.IpMulticastJoin ||
                     type == (uint)SocketOption.IpMulticastLeave) {
                     return Property<IMulticastOption>.Create(type,
                         jsonObject.GetValue("property").ToObject<IMulticastOption>(serializer));
                 }
-                else if (type == (uint)PropertyType.FileInfo) {
+                if (type == (uint)PropertyType.FileInfo) {
                     return Property<FileInfo>.Create(type,
                         jsonObject.GetValue("property").ToObject<FileInfo>(serializer));
                 }
-                else if (type == (uint)PropertyType.AddressInfo) {
+                if (type == (uint)PropertyType.AddressInfo) {
                     return Property<AddressInfo>.Create(type,
                         jsonObject.GetValue("property").ToObject<AddressInfo>(serializer));
                 }
-                else if (type == (uint)PropertyType.InterfaceInfo) {
+                if (type == (uint)PropertyType.InterfaceInfo) {
                     return Property<InterfaceInfo>.Create(type,
                         jsonObject.GetValue("property").ToObject<InterfaceInfo>(serializer));
                 }
-                else if (type >= (uint)DnsRecordType.Simple &&
-                         type < (uint)DnsRecordType.__prx_record_max) {
-                    return jsonObject.ToObject<Property<byte[]>>();
-                }
-                else if (type < (uint)SocketOption.__prx_so_max) {
+                if (type < (uint)SocketOption.__prx_so_max) {
                     return jsonObject.ToObject<Property<ulong>>();
                 }
-                else {
-                    throw new FormatException($"Bad type encountered {type}");
-                }
+                
+                throw new FormatException($"Bad type encountered {type}");
             }
             public override void WriteJson(JsonWriter writer, object value,
-                JsonSerializer serializer) {
-                throw new NotImplementedException();
-            }
-            public override bool CanWrite {
-                get { return false; }
-            }
+                JsonSerializer serializer) => throw new NotImplementedException();
+            public override bool CanWrite => false;
         }
     }
 }

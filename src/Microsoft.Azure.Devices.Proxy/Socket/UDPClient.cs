@@ -98,7 +98,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         // Complete receive
         //
         public byte[] EndReceive(IAsyncResult asyncResult) {
-            UdpReceiveResult result = TaskToApm.End<UdpReceiveResult>(asyncResult);
+            var result = TaskToApm.End<UdpReceiveResult>(asyncResult);
             return result.Buffer;
         }
 
@@ -111,7 +111,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                 if (_cleanedUp) {
                     return;
                 }
-                Socket chkClientSocket = Socket;
+                var chkClientSocket = Socket;
                 Socket = null;
                 if (chkClientSocket != null) {
                     chkClientSocket.Dispose();

@@ -100,8 +100,8 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns>Successful acceptance or not</returns>
         private Task<bool> OnAcceptAsync(RelayedHttpListenerContext context) {
             var id = context.Request.Headers["x-Id"];
-            if (!string.IsNullOrEmpty(id) && Reference.TryParse(id, out Reference streamId)) {
-                if (_connectionMap.TryGetValue(streamId, out ServiceBusRelayConnection connection)) {
+            if (!string.IsNullOrEmpty(id) && Reference.TryParse(id, out var streamId)) {
+                if (_connectionMap.TryGetValue(streamId, out var connection)) {
                     // We correlate context and relay stream by finding 
                     // the stream id in the stream's tracking id
                     if (context.ToString().ToLower().Contains(id.ToLower())) {
@@ -126,7 +126,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     }
 
                     // Correlate the accepted connection to an open stream in our map
-                    bool connected = false;
+                    var connected = false;
                     try {
                         //
                         // Find the stream id in the stream's tracking id and connect it
@@ -136,8 +136,8 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                         //
                         var ctx = relayConnection.ToString().Split(' ', ':', '_');
                         foreach (var id in ctx) {
-                            if (Reference.TryParse(id, out Reference streamId)) {
-                                if (_connectionMap.TryGetValue(streamId, out ServiceBusRelayConnection connection)) {
+                            if (Reference.TryParse(id, out var streamId)) {
+                                if (_connectionMap.TryGetValue(streamId, out var connection)) {
                                     connected = connection.OpenAsync(relayConnection) != null;
                                     ProxyEventSource.Log.ConnectionAccepted(relayConnection);
                                     break;
