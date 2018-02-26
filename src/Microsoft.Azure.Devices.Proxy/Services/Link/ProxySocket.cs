@@ -107,6 +107,9 @@ namespace Microsoft.Azure.Devices.Proxy {
             return new TransformManyBlock<DataflowMessage<INameRecord>, IProxyLink>(
             async (input) => {
                 var proxy = input.Arg;
+                if (proxy.Disconnected) {
+                    return Enumerable.Empty<IProxyLink>();
+                }
                 ProxyEventSource.Log.LinkCreate(this, proxy.Name, Info.Address);
 
                 Message response = null;
@@ -152,9 +155,9 @@ namespace Microsoft.Azure.Devices.Proxy {
                         throw e;
                     }
                 }
-                catch (ProxyNotFound pnf) {
-                    // The proxy was not reachable - try again since it must know the address.
-                    error.Push(input, pnf);
+                catch (ProxyNotFound) {
+                    // Not reachable, try another
+                    proxy.Disconnected = true;
                 }
                 catch (ProxyTimeout pte) {
                     // The proxy request timed out - try again with increased timeout
@@ -195,6 +198,9 @@ namespace Microsoft.Azure.Devices.Proxy {
             return new TransformManyBlock<DataflowMessage<INameRecord>, DataflowMessage<INameRecord>>(
             async (input) => {
                 var record = input.Arg;
+                if (record.Disconnected) {
+                    return Enumerable.Empty<DataflowMessage<INameRecord>>();
+                }
                 Message response = null;
                 var request = Message.Create(Id, Reference.Null, PingRequest.Create(address));
                 try {
@@ -205,8 +211,7 @@ namespace Microsoft.Azure.Devices.Proxy {
                     response = await Provider.ControlChannel.CallAsync(record,
                         request, pingTimeout, ct).ConfigureAwait(false);
 
-                    var result = response?.Content as PingResponse;
-                    if (result != null) {
+                    if (response?.Content is PingResponse result) {
                         if (response.Error == (int)SocketError.Success) {
                             return input.AsEnumerable();
                         }
@@ -214,10 +219,10 @@ namespace Microsoft.Azure.Devices.Proxy {
                     ProxyEventSource.Log.PingFailure(this, record, address, response);
                     input.Dispose();
                 }
-                catch (ProxyNotFound pnf) {
-                    // Proxy not found - could occur if our target proxy was down
-                    // for reauth, flow ctrl, etc.
-                    error.Push(input, pnf);
+                catch (ProxyNotFound) {
+                    // Proxy not found - proxy is offline, log and continue
+                    ProxyEventSource.Log.PingFailure(this, record, address, response);
+                    record.Disconnected = true;
                 }
                 catch (ProxyTimeout pte) {
                     // The proxy request timed out - requeue to increase timeout

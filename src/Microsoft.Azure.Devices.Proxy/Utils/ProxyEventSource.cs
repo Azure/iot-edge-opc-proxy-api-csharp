@@ -311,12 +311,11 @@ namespace Microsoft.Azure.Devices.Proxy {
 
         [NonEvent]
         internal static string CreateSourceString(object source) {
-            Type type;
             string s;
             if (source == null) {
                 return string.Empty;
             }
-            if ((type = source as Type) != null) {
+            if (source is Type type) {
                 return type.Name;
             }
             else if ((s = source as string) != null) {

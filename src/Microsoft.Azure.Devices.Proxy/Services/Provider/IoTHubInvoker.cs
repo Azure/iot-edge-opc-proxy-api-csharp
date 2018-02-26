@@ -219,21 +219,18 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 }
             }
             catch (HttpResponseException hex) {
-                /**/
+                ProxyEventSource.Log.HandledExceptionAsError(this, hex);
                 if (hex.StatusCode == HttpStatusCode.NotFound) {
                     throw new ProxyNotFound(hex);
                 }
                 if (hex.StatusCode == HttpStatusCode.Forbidden) {
                     throw new ProxyPermission(hex);
                 }
-                else if (hex.StatusCode == HttpStatusCode.GatewayTimeout) {
+                if (hex.StatusCode == HttpStatusCode.GatewayTimeout) {
                     throw new ProxyTimeout(hex.Message, hex);
                 }
-                else {
-                    ProxyEventSource.Log.HandledExceptionAsError(this, hex);
-                    throw new ProxyException(
-                        $"Remote proxy device method communication failure: {hex.StatusCode}.", hex);
-                }
+                throw new ProxyException(
+                    $"Remote proxy device method communication failure: {hex.StatusCode}.", hex);
             }
             catch (OperationCanceledException) {
                 throw;

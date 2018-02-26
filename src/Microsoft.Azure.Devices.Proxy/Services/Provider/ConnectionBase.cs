@@ -199,8 +199,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                         try {
                             _lastMessage = await _send.ReceiveAsync(_timeout,
                                 _open.Token).ConfigureAwait(false);
-                            var data = _lastMessage.Content as DataMessage;
-                            if (data != null) {
+                            if (_lastMessage.Content is DataMessage data) {
                                 data.SequenceNumber = _nextSendSequenceNumber++;
                             }
                         }
@@ -239,8 +238,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     // Read message and send to source block
                     var message = await codec.ReadAsync<Message>(_open.Token).ConfigureAwait(false);
                     if (message != null) {
-                        var data = message.Content as DataMessage;
-                        if (data != null && data.SequenceNumber != _nextReceiveSequenceNumber++) {
+                        if (message.Content is DataMessage data && data.SequenceNumber != _nextReceiveSequenceNumber++) {
                             // TODO: Implement poll for previous message
                             if (data.SequenceNumber > _nextReceiveSequenceNumber - 1) {
                                 ProxyEventSource.Log.MissingData(this, data, _nextReceiveSequenceNumber - 1);
@@ -278,17 +276,6 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         /// <returns></returns>
         protected abstract Task CloseStreamAsync(ICodecStream<S> codec);
 
-        protected Message _lastMessage;
-        protected TimeSpan _timeout = TimeSpan.FromMinutes(1);
-        protected Task _pumps;
-        protected readonly CancellationTokenSource _open = new CancellationTokenSource();
-        protected readonly BufferBlock<Message> _receive;
-        protected readonly BufferBlock<Message> _send;
-        protected readonly CodecId _encoding;
-        protected readonly Reference _remoteId;
-        protected ulong _nextSendSequenceNumber;
-        protected ulong _nextReceiveSequenceNumber;
-
         /// <summary>
         /// Wrapper that calls dispose on the stream - at a minimum...
         /// </summary>
@@ -309,5 +296,16 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             }
             ProxyEventSource.Log.StreamClosed(this, codec.Stream);
         }
+
+        protected Message _lastMessage;
+        protected TimeSpan _timeout = TimeSpan.FromMinutes(1);
+        protected Task _pumps;
+        protected readonly CancellationTokenSource _open = new CancellationTokenSource();
+        protected readonly BufferBlock<Message> _receive;
+        protected readonly BufferBlock<Message> _send;
+        protected readonly CodecId _encoding;
+        protected readonly Reference _remoteId;
+        protected ulong _nextSendSequenceNumber;
+        protected ulong _nextReceiveSequenceNumber;
     }
 }

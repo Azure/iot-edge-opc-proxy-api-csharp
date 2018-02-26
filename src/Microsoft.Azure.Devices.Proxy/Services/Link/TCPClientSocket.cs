@@ -258,14 +258,21 @@ namespace Microsoft.Azure.Devices.Proxy {
             }
 
             // Wait until a connected link is received.  Then cancel the remainder of the pipeline.
-            _link = await connection.ReceiveAsync(ct);
-            connection.Complete();
-            retries.Cancel();
+            try {
+                _link = await connection.ReceiveAsync(ct);
+                connection.Complete();
+                retries.Cancel();
 
-            Host.AddReference(_link.Proxy.Address);
-            Host.LastActivity = _link.Proxy.LastActivity = DateTime.Now;
-            await Provider.NameService.AddOrUpdateAsync(Host, ct).ConfigureAwait(false);
-            await Provider.NameService.AddOrUpdateAsync(_link.Proxy, ct).ConfigureAwait(false);
+                Host.AddReference(_link.Proxy.Address);
+                Host.LastActivity = _link.Proxy.LastActivity = DateTime.Now;
+                await Provider.NameService.AddOrUpdateAsync(_link.Proxy, ct).ConfigureAwait(false);
+            }
+            catch (Exception e) {
+                throw SocketException.Create("Failed to connect", e);
+            }
+            finally {
+                await Provider.NameService.AddOrUpdateAsync(Host, ct).ConfigureAwait(false);
+            }
         }
 
         public override Task ListenAsync(int backlog, CancellationToken ct) =>

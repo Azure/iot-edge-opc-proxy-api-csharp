@@ -56,8 +56,7 @@ namespace Microsoft.Azure.Devices.Proxy {
         /// <returns></returns>
         public IEnumerable<SocketAddress> Addresses() {
             foreach(var address in Inner) {
-                var collection = address as SocketAddressCollection;
-                if (collection != null) {
+                if (address is SocketAddressCollection collection) {
                     foreach (var r in collection.Addresses()) {
                         yield return r;
                     }

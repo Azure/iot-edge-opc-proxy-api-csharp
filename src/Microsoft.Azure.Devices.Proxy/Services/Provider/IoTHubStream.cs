@@ -134,8 +134,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         private void CreateReceiveBlock() {
             _receiveWindow = new SortedDictionary<ulong, Message>();
             _receive = new TransformManyBlock<Message, Message>(response => {
-                var data = response.Content as DataMessage;
-                if (data != null) {
+                if (response.Content is DataMessage data) {
                     if (data.SequenceNumber != _nextReceiveSequenceNumber) {
                         //
                         // Message received with sequence number is not what we expected.

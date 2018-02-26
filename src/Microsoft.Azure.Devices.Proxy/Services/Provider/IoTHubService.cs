@@ -130,9 +130,13 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             new TransformManyBlock<Expression<Func<INameRecord, bool>>, INameRecord>(
                 async query => {
                     await _registryLoaded.Task;
-                    // Compile query and returned ordered results - only connected
-                    return _cache.Values.Where(r => !r.Disconnected).Where(
+                    // Compile query and return ordered results - only connected
+                    var result = _cache.Values.Where(r => !r.Disconnected).Where(
                         query.Compile()).OrderByDescending(k => k.LastActivity);
+                    if (!result.Any()) {
+                        throw new ProxyNotFound("No connected proxies found.");
+                    }
+                    return result;
                 },
             options);
 
@@ -481,6 +485,11 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         }
 
         /// <summary>
+        /// Reload cache every other minute.
+        /// </summary>
+        private static readonly TimeSpan kReloadTimeSpan = TimeSpan.FromMinutes(2);
+
+        /// <summary>
         /// Load a local in memory copy of all proxies and all hosts. The assumption
         /// is that the number of proxies that are "active" will be small. The number
         /// of hosts will be larger, however, we can prune the list later.
@@ -493,6 +502,16 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 // Load all hosts from iothub
                 await ForeachRecordAsync(CreateQueryString(NameRecordType.Host),
                     r => _cache.TryAdd(r.Address, r), _open.Token);
+
+                foreach (var item in _cache.Values) {
+                    if (item.Type.HasFlag(NameRecordType.Proxy) &&
+                        !await IsConnectedAsync(item, _open.Token)) {
+                        item.Disconnected = true;
+                    }
+                    else {
+                        item.Disconnected = false;
+                    }
+                }
             }
             catch (OperationCanceledException) {
                 // Cancelled before fully loaded...
@@ -501,12 +520,106 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
 
             // Done loading all proxies and hosts
             _registryLoaded.SetResult(true);
-
-            var reloadTimeout = TimeSpan.FromMinutes(5);
+            var reloadTimeout = kReloadTimeSpan;
             while (!_open.IsCancellationRequested) {
 
-                // Update status for each item
-                foreach(var item in _cache.Values) {
+                // Update all items in the device registry that need updating
+                try {
+                    while (!_open.IsCancellationRequested) {
+                        var now = DateTime.Now;
+                        var item = await _updateQueue.ReceiveAsync(reloadTimeout, _open.Token);
+                        if (item.Item2 != NameServiceOperation.Remove) {
+                            var record = await UpdateRecordAsync(item.Item1, _open.Token).ConfigureAwait(false);
+                            if (record == null) {
+                                // TODO: Throw error and catch to log.
+                            }
+                            else {
+                                // Update cache
+                                var op = NameServiceEvent.Updated;
+                                await NotifyChanges(_cache.AddOrUpdate(record.Address, v => {
+                                    record.Disconnected = false;
+                                    op = NameServiceEvent.Added;
+                                    return record;
+                                }, (k, v) => {
+                                    record.Disconnected = v.Disconnected;
+                                    return record;
+                                }), op);
+                            }
+                        }
+                        else {
+                            await RemoveRecordAsync(item.Item1, _open.Token).ConfigureAwait(false);
+                            if (_cache.TryRemove(item.Item1.Address, out var removed)) {
+                                await NotifyChanges(removed, NameServiceEvent.Removed);
+                            }
+                        }
+                        if (reloadTimeout <= kReloadTimeSpan) {
+                            var passed = DateTime.Now - now;
+                            if (passed < reloadTimeout) {
+                                // Some time has passed, but pump more messages...
+                                reloadTimeout -= passed;
+                                continue;
+                            }
+                            // Reload now - timeout expired - but make sure to re-arm timer
+                            reloadTimeout = kReloadTimeSpan;
+                            break;
+                        }
+                        // Reset timer to original timespan
+                        reloadTimeout = kReloadTimeSpan;
+                    }
+                }
+                catch (TimeoutException) {
+                    if (reloadTimeout > TimeSpan.FromHours(6)) {
+                        // If we are idle for 6 hours, only refresh every week. 
+                        reloadTimeout = TimeSpan.FromDays(7);
+                    }
+                    else {
+                        // Linearily increase timeout initially
+                        reloadTimeout = reloadTimeout + kReloadTimeSpan;
+                    }
+                }
+                catch (Exception) {
+                    if (reloadTimeout < kReloadTimeSpan) {
+                        reloadTimeout = kReloadTimeSpan;
+                    }
+                    continue;
+                }
+
+                // Reload all hosts from device registry (which is our single source of truth)
+                var cache = new Dictionary<Reference, IoTHubRecord>();
+                try {
+                    await ForeachRecordAsync(CreateQueryString(NameRecordType.Proxy, true),
+                        r => cache.Add(r.Address, r), _open.Token);
+                    await ForeachRecordAsync(CreateQueryString(NameRecordType.Host),
+                        r => cache.Add(r.Address, r), _open.Token);
+                }
+                catch (OperationCanceledException) {
+                    // Cancelled - will exit
+                    continue;
+                }
+
+                // First remove all items not retrieved now
+                foreach (var item in _cache.Values) {
+                    if (!cache.ContainsKey(item.Address) &&
+                        _cache.TryRemove(item.Address, out var removed)) {
+                        await NotifyChanges(removed, NameServiceEvent.Removed);
+                    }
+                }
+
+                // Then notify about changes
+                foreach (var item in cache.Values) {
+                    var op = NameServiceEvent.Updated;
+                    await NotifyChanges(_cache.AddOrUpdate(item.Address, v => {
+                        item.Disconnected = false;
+                        op = NameServiceEvent.Added;
+                        return item;
+                    }, (k, v) => {
+                        item.Disconnected = v.Disconnected;
+                        return item;
+                    }), op);
+                }
+
+                // Update status for each item in cache
+                foreach (var item in _cache.Values) {
                     if (item.Type.HasFlag(NameRecordType.Proxy) &&
                         !await IsConnectedAsync(item, _open.Token)) {
                         if (!item.Disconnected) {
@@ -520,77 +633,6 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                         }
                         item.Disconnected = false;
                     }
-                }
-
-                // Update all items in the device registry that need updating
-                try {
-                    var item = await _updateQueue.ReceiveAsync(reloadTimeout, _open.Token);
-                    if (item.Item2 != NameServiceOperation.Remove) {
-                        var record = await UpdateRecordAsync(item.Item1, _open.Token).ConfigureAwait(false);
-                        if (record == null) {
-                           // TODO: Throw error and catch to log.
-                        }
-                        else {
-                            // Update cache
-                            var op = NameServiceEvent.Updated;
-                            await NotifyChanges(_cache.AddOrUpdate(record.Address, v => {
-                                record.Disconnected = false;
-                                op = NameServiceEvent.Added;
-                                return record;
-                            }, (k, v) => {
-                                record.Disconnected = v.Disconnected;
-                                return record;
-                            }), op);
-                        }
-                    }
-                    else {
-                        await RemoveRecordAsync(item.Item1, _open.Token).ConfigureAwait(false);
-                        if (_cache.TryRemove(item.Item1.Address, out var removed)) {
-                            await NotifyChanges(removed, NameServiceEvent.Removed);
-                        }
-                    }
-
-                    // Try to update next record in the queue while the service provider is open
-                    continue;
-                }
-                catch (TimeoutException) {
-
-                    var cache = new Dictionary<Reference, IoTHubRecord>();
-                    // Reload all hosts from device registry (which is our single source of truth)
-                    try {
-                        await ForeachRecordAsync(CreateQueryString(NameRecordType.Proxy, true),
-                            r => cache.Add(r.Address, r), _open.Token);
-                        await ForeachRecordAsync(CreateQueryString(NameRecordType.Host),
-                            r => cache.Add(r.Address, r), _open.Token);
-                    }
-                    catch (OperationCanceledException) {
-                        // Cancelled - will exit
-                        continue;
-                    }
-
-                    // First remove all items not retrieved now
-                    foreach(var item in _cache.Values) {
-                        if (!cache.ContainsKey(item.Address) &&
-                            _cache.TryRemove(item.Address, out var removed)) {
-                            await NotifyChanges(removed, NameServiceEvent.Removed);
-                        }
-                    }
-
-                    // Then notify about changes
-                    foreach(var item in cache.Values) {
-                        var op = NameServiceEvent.Updated;
-                        await NotifyChanges(_cache.AddOrUpdate(item.Address, v => {
-                            item.Disconnected = false;
-                            op = NameServiceEvent.Added;
-                            return item;
-                        }, (k, v) => {
-                            item.Disconnected = v.Disconnected;
-                            return item;
-                        }), op);
-                    }
-                }
-                catch (Exception) {
-                    // Todo: Log error
                 }
             }
         }

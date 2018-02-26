@@ -48,6 +48,13 @@ namespace Microsoft.Azure.Devices.Proxy {
         }
 
         /// <summary>
+        /// If proxy, whether proxy is disconnected
+        /// </summary>
+        bool Disconnected {
+            get; set;
+        }
+
+        /// <summary>
         /// Returns list of references for this record
         /// </summary>
         IEnumerable<Reference> References {
