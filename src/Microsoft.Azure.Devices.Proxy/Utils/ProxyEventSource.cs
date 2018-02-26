@@ -6,6 +6,7 @@ namespace Microsoft.Azure.Devices.Proxy {
     using System.Diagnostics;
     using System.Diagnostics.Tracing;
     using System.Globalization;
+    using Microsoft.Azure.Devices.Proxy.Provider;
 
     /// <summary>
     /// EventSource for the new Dynamic EventSource type of Microsoft-Azure-Devices-Proxy traces.
@@ -172,7 +173,15 @@ namespace Microsoft.Azure.Devices.Proxy {
             Trace.TraceInformation($"Record {record} removed...");
         }
 
-        // 40230 - 40246 Available
+        [Event(40230, Message = "{0} cache refresh - next timeout {1}.")]
+        public void RegistryRefresh(object source, TimeSpan reloadTimeout) {
+            if (this.IsEnabled()) {
+                this.WriteEvent(40230, CreateSourceString(source), reloadTimeout);
+            }
+            Trace.TraceInformation($"Cache refresh - next timeout {reloadTimeout}...");
+        }
+
+        // 40232 - 40246 Available
 
         [Event(40247, Message = "{0} destroyed.")]
         public void LinkRemoved(object source)

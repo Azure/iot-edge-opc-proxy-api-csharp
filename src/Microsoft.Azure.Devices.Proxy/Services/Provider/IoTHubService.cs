@@ -584,6 +584,8 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     continue;
                 }
 
+                ProxyEventSource.Log.RegistryRefresh(this, reloadTimeout);
+
                 // Reload all hosts from device registry (which is our single source of truth)
                 var cache = new Dictionary<Reference, IoTHubRecord>();
                 try {
