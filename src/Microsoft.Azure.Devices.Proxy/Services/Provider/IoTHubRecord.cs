@@ -196,8 +196,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 return;
             }
 
-            var refs = _tags[_referencesTag] as JObject;
-            if (refs != null) {
+            if (_tags[_referencesTag] is JObject refs) {
 
                 refs.Remove(address.ToString());
                 if (refs.HasValues) {
@@ -253,7 +252,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             }
         }
 
-        public bool Disconnected { get; internal set; } = false;
+        public bool Disconnected { get; set; } = false;
 
         /// <summary>
         /// Comparison

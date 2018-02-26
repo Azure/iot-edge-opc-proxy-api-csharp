@@ -134,8 +134,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         private void CreateReceiveBlock() {
             _receiveWindow = new SortedDictionary<ulong, Message>();
             _receive = new TransformManyBlock<Message, Message>(response => {
-                var data = response.Content as DataMessage;
-                if (data != null) {
+                if (response.Content is DataMessage data) {
                     if (data.SequenceNumber != _nextReceiveSequenceNumber) {
                         //
                         // Message received with sequence number is not what we expected.
@@ -167,8 +166,9 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                     _nextReceiveSequenceNumber++;
 
                     if (_receiveWindow.Count > 0) {
-                        var result = new List<Message>();
-                        result.Add(response);
+                        var result = new List<Message> {
+                            response
+                        };
 
                         // Add messages with sequence number beyond ours to returned list...
                         foreach (var r in _receiveWindow.Values) {
@@ -213,9 +213,13 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 try {
                     ((DataMessage)message.Content).SequenceNumber = _nextSendSequenceNumber++;
 
+                    //
+                    // Try send - exceptions except for proxynotfound (proxy gone!) are retried
+                    // 20 times with exponential increase (3 ms), or until send timeout expires.
+                    //
                     var response = await _sender.TryCallWithRetryAsync(
                         _link, message, TimeSpan.FromMilliseconds(_pollTimeout * 2),
-                        int.MaxValue, _open.Token).ConfigureAwait(false);
+                        kMaxSendAttempts, _open.Token).ConfigureAwait(false);
 
                     if (!_open.IsCancellationRequested) {
                         if (response.Error != (int)SocketError.Success) {
@@ -266,5 +270,6 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
 
         private const int _receiveWindowMax = 5; // Max 5 messages to reorder...
         private const ulong _pollTimeout = 120000; // 120 seconds default poll timeout
+        private const int kMaxSendAttempts = 20;  // Max 20 retries on exceptions in send
     }
 }

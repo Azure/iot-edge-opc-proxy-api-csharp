@@ -78,6 +78,15 @@ namespace Microsoft.Azure.Devices.Proxy {
             get; set;
         } = DateTime.Now;
 
+
+        /// <summary>
+        /// Whether proxy is disconnected
+        /// </summary>
+        [DataMember(Name = "disconnected", Order = 9)]
+        public bool Disconnected {
+            get; set;
+        } = false;
+
         /// <summary>
         /// References as enumerable
         /// </summary>

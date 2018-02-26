@@ -219,21 +219,18 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 }
             }
             catch (HttpResponseException hex) {
-                /**/
+                ProxyEventSource.Log.HandledExceptionAsError(this, hex);
                 if (hex.StatusCode == HttpStatusCode.NotFound) {
                     throw new ProxyNotFound(hex);
                 }
                 if (hex.StatusCode == HttpStatusCode.Forbidden) {
                     throw new ProxyPermission(hex);
                 }
-                else if (hex.StatusCode == HttpStatusCode.GatewayTimeout) {
+                if (hex.StatusCode == HttpStatusCode.GatewayTimeout) {
                     throw new ProxyTimeout(hex.Message, hex);
                 }
-                else {
-                    ProxyEventSource.Log.HandledExceptionAsError(this, hex);
-                    throw new ProxyException(
-                        $"Remote proxy device method communication failure: {hex.StatusCode}.", hex);
-                }
+                throw new ProxyException(
+                    $"Remote proxy device method communication failure: {hex.StatusCode}.", hex);
             }
             catch (OperationCanceledException) {
                 throw;
@@ -285,11 +282,15 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             try {
                 return await CallAsync(record, request, timeout, ct).ConfigureAwait(false);
             }
+            catch (ProxyNotFound) {
+                throw;
+            }
             catch (OperationCanceledException) {
                 throw;
             }
-            catch { }
-            return null;
+            catch (Exception) {
+                return null;
+            }
         }
 
         /// <summary>
@@ -303,8 +304,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         public Task<Message> TryCallWithRetryAsync(
             INameRecord record, Message request, TimeSpan timeout, int max, CancellationToken ct) =>
             Retry.Do(ct, () => CallAsync(record, request, timeout, ct),
-                (e) => !ct.IsCancellationRequested, Retry.NoBackoff, max);
-
+                (e) => !ct.IsCancellationRequested && !(e is ProxyNotFound), Retry.Exponential, max);
 
         /// <summary>
         /// Dispose underlying http client
