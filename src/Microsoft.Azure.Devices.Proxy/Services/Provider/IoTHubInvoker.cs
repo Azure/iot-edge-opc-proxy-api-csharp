@@ -282,11 +282,15 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
             try {
                 return await CallAsync(record, request, timeout, ct).ConfigureAwait(false);
             }
+            catch (ProxyNotFound) {
+                throw;
+            }
             catch (OperationCanceledException) {
                 throw;
             }
-            catch { }
-            return null;
+            catch (Exception) {
+                return null;
+            }
         }
 
         /// <summary>
@@ -300,8 +304,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
         public Task<Message> TryCallWithRetryAsync(
             INameRecord record, Message request, TimeSpan timeout, int max, CancellationToken ct) =>
             Retry.Do(ct, () => CallAsync(record, request, timeout, ct),
-                (e) => !ct.IsCancellationRequested, Retry.NoBackoff, max);
-
+                (e) => !ct.IsCancellationRequested && !(e is ProxyNotFound), Retry.Exponential, max);
 
         /// <summary>
         /// Dispose underlying http client
