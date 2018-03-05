@@ -5,7 +5,7 @@
     <AssemblyTitle>Microsoft Azure Devices Opc-UA Reference Stack Proxy Transport</AssemblyTitle>
     <VersionPrefix>1.0.4</VersionPrefix>
     <Authors>microsoft</Authors>
-    <TargetFrameworks>netstandard1.4;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.4;netstandard2.0;net46</TargetFrameworks>
     <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
     <NoWarn>$(NoWarn);1591;1734</NoWarn>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
