@@ -1,6 +1,18 @@
 language: c
 sudo: required
 dist: trusty
+env:
+  matrix:
+    - target="src/Microsoft.Azure.Devices.Proxy" framework="netstandard1.3"
+    - target="src/Microsoft.Azure.Devices.Proxy" framework="netstandard2.0"
+    - target="samples/opc-ua/src/Microsoft.Azure.Devices.Proxy.Opc.Ua" framework="netstandard1.3"
+    - target="samples/opc-ua/src/Microsoft.Azure.Devices.Proxy.Opc.Ua" framework="netstandard2.0"
+    - target="samples/simple/tcp" framework="netcoreapp1.1"
+    - target="samples/simple/tcp" framework="netcoreapp2.0"
+    - target="samples/netcat" framework="netcoreapp1.1"
+    - target="samples/netcat" framework="netcoreapp2.0"
+    - target="samples/http" framework="netcoreapp1.1"
+    - target="samples/http" framework="netcoreapp2.0"
 install:
   - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
   - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
@@ -9,5 +21,6 @@ install:
   - sudo apt-get install dotnet-sdk-2.1.3 -y
 script: 
   - dotnet restore
-  - dotnet build -c Debug
-  - dotnet build -c Release
+  - cd "$target"
+  - dotnet build -f $framework -c Debug
+  - dotnet build -f $framework -c Release
