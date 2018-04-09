@@ -3,16 +3,16 @@ sudo: required
 dist: trusty
 env:
   matrix:
-    - proxy=core_1_3 build_path="src/Microsoft.Azure.Devices.Proxy" build_framework="netstandard1.3"
-    - proxy=core_2_0 build_path="src/Microsoft.Azure.Devices.Proxy" build_framework="netstandard2.0"
-    - proxy=opcua_1_3 build_path="samples/opc-ua/src/Microsoft.Azure.Devices.Proxy.Opc.Ua" build_framework="netstandard1.3"
-    - proxy=opcua_2_0 build_path="samples/opc-ua/src/Microsoft.Azure.Devices.Proxy.Opc.Ua" build_framework="netstandard2.0"
-    - proxy=samples_simple_1_1 build_path="samples/simple/tcp" build_framework="netcoreapp1.1"
-    - proxy=samples_simple_2_0 build_path="samples/simple/tcp" build_framework="netcoreapp2.0"
-    - proxy=samples_netcat_1_1 build_path="samples/netcat" build_framework="netcoreapp1.1"
-    - proxy=samples_netcat_2_0 build_path="samples/netcat" build_framework="netcoreapp2.0"
-    - proxy=samples_http_1_1 build_path="samples/http" build_framework="netcoreapp1.1"
-    - proxy=samples_http_2_0 build_path="samples/http" build_framework="netcoreapp2.0"
+    - target="src/Microsoft.Azure.Devices.Proxy" framework="netstandard1.3"
+    - target="src/Microsoft.Azure.Devices.Proxy" framework="netstandard2.0"
+    - target="samples/opc-ua/src/Microsoft.Azure.Devices.Proxy.Opc.Ua" framework="netstandard1.3"
+    - target="samples/opc-ua/src/Microsoft.Azure.Devices.Proxy.Opc.Ua" framework="netstandard2.0"
+    - target="samples/simple/tcp" framework="netcoreapp1.1"
+    - target="samples/simple/tcp" framework="netcoreapp2.0"
+    - target="samples/netcat" framework="netcoreapp1.1"
+    - target="samples/netcat" framework="netcoreapp2.0"
+    - target="samples/http" framework="netcoreapp1.1"
+    - target="samples/http" framework="netcoreapp2.0"
 install:
   - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
   - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
@@ -21,6 +21,6 @@ install:
   - sudo apt-get install dotnet-sdk-2.1.3 -y
 script: 
   - dotnet restore
-  - cd "$build_path"
-  - dotnet build -f $build_framework -c Debug
-  - dotnet build -f $build_framework -c Release
+  - cd "$target"
+  - dotnet build -f $framework -c Debug
+  - dotnet build -f $framework -c Release
