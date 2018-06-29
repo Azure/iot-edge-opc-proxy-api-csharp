@@ -1,0 +1,35 @@
+﻿// ------------------------------------------------------------
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
+// ------------------------------------------------------------
+
+namespace Microsoft.Azure.IIoT.Proxy.Provider {
+    using Microsoft.Azure.IIoT.Proxy.Provider.Hub;
+    using System;
+
+    public class NullProvider : IProvider {
+
+        public IRemotingService ControlChannel => throw new NotImplementedException();
+
+        public INameService NameService => throw new NotImplementedException();
+
+        public IStreamService StreamService => throw new NotImplementedException();
+
+        /// <summary>
+        /// Initialize default provider
+        /// </summary>
+        /// <returns></returns>
+        public static IProvider Create() {
+            var iothub = Environment.GetEnvironmentVariable("_HUB_CS");
+            if (iothub != null) {
+                return new DefaultProvider(iothub);
+            }
+            return new NullProvider();
+        }
+
+        /// <summary>
+        /// Default constructor, initializes from environment
+        /// </summary>
+        private NullProvider() {}
+    }
+}

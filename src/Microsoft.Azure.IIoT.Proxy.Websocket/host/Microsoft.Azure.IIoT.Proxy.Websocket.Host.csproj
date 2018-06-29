@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>A Kestrel based sample stream provider Host for testing.</Description>
+    <AssemblyTitle>Kestrel based stream provider sample Host for Azure Device Proxy</AssemblyTitle>
+    <Authors>microsoft</Authors>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <NoWarn>$(NoWarn);1591;1734</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageReleaseNotes>https://github.com/Azure/iot-edge-opc-proxy/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/Azure/iot-edge-opc-proxy</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/iot-edge-opc-proxy/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Azure/iot-edge-opc-proxy</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Https" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Microsoft.Azure.IIoT.Proxy.Websocket.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="testCert.pfx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Signed' ">
+    <DefineConstants>$(DefineConstants);RELEASE_DELAY_SIGN</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+</Project>

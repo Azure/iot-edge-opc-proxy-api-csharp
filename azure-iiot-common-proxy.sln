@@ -1,0 +1,81 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BF7E0394-E2B0-46FD-BC01-7BD5A95B0014}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5FCF94AE-DF81-4A58-B2DA-99E7213493C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.Proxy.Api", "src\Microsoft.Azure.IIoT.Proxy.Api\src\Microsoft.Azure.IIoT.Proxy.Api.csproj", "{894F300C-CC13-47BD-A579-8D8CBBB99CCA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.Proxy.Api.Cli", "src\Microsoft.Azure.IIoT.Proxy.Api\cli\Microsoft.Azure.IIoT.Proxy.Api.Cli.csproj", "{84C95119-3642-4422-A605-B4188F3E0E7C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.Proxy.Websocket", "src\Microsoft.Azure.IIoT.Proxy.Websocket\src\Microsoft.Azure.IIoT.Proxy.Websocket.csproj", "{1B2AFB5D-23E6-4AF2-B2AC-413FF364BA9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.Net.Netcat", "src\Microsoft.Azure.IIoT.Net.Netcat\src\Microsoft.Azure.IIoT.Net.Netcat.csproj", "{CA109ED4-B4C3-4525-AA8B-FB9329FEDC9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.Http.Relay", "src\Microsoft.Azure.IIoT.Http.Relay\src\Microsoft.Azure.IIoT.Http.Relay.csproj", "{C898465F-C2EC-4319-B3D8-37E9ECC28CF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.OpcUa.Proxy", "src\Microsoft.Azure.IIoT.OpcUa.Proxy\src\Microsoft.Azure.IIoT.OpcUa.Proxy.csproj", "{29A0D814-7C77-40B8-B2CB-161ECE82305D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.OpcUa.Proxy.Cli", "src\Microsoft.Azure.IIoT.OpcUa.Proxy\cli\Microsoft.Azure.IIoT.OpcUa.Proxy.Cli.csproj", "{C2BA49D3-A9FA-4CB1-A0FB-D9A57D034DA3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.Azure.IIoT.Proxy.Websocket.Host", "src\Microsoft.Azure.IIoT.Proxy.Websocket\host\Microsoft.Azure.IIoT.Proxy.Websocket.Host.csproj", "{C583C9B1-F810-44EE-B5C6-AD5F0D1A8811}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{894F300C-CC13-47BD-A579-8D8CBBB99CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{894F300C-CC13-47BD-A579-8D8CBBB99CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{894F300C-CC13-47BD-A579-8D8CBBB99CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{894F300C-CC13-47BD-A579-8D8CBBB99CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84C95119-3642-4422-A605-B4188F3E0E7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84C95119-3642-4422-A605-B4188F3E0E7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84C95119-3642-4422-A605-B4188F3E0E7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84C95119-3642-4422-A605-B4188F3E0E7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B2AFB5D-23E6-4AF2-B2AC-413FF364BA9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B2AFB5D-23E6-4AF2-B2AC-413FF364BA9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B2AFB5D-23E6-4AF2-B2AC-413FF364BA9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B2AFB5D-23E6-4AF2-B2AC-413FF364BA9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA109ED4-B4C3-4525-AA8B-FB9329FEDC9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA109ED4-B4C3-4525-AA8B-FB9329FEDC9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA109ED4-B4C3-4525-AA8B-FB9329FEDC9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA109ED4-B4C3-4525-AA8B-FB9329FEDC9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C898465F-C2EC-4319-B3D8-37E9ECC28CF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C898465F-C2EC-4319-B3D8-37E9ECC28CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C898465F-C2EC-4319-B3D8-37E9ECC28CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C898465F-C2EC-4319-B3D8-37E9ECC28CF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29A0D814-7C77-40B8-B2CB-161ECE82305D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29A0D814-7C77-40B8-B2CB-161ECE82305D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29A0D814-7C77-40B8-B2CB-161ECE82305D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29A0D814-7C77-40B8-B2CB-161ECE82305D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2BA49D3-A9FA-4CB1-A0FB-D9A57D034DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2BA49D3-A9FA-4CB1-A0FB-D9A57D034DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2BA49D3-A9FA-4CB1-A0FB-D9A57D034DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2BA49D3-A9FA-4CB1-A0FB-D9A57D034DA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C583C9B1-F810-44EE-B5C6-AD5F0D1A8811}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C583C9B1-F810-44EE-B5C6-AD5F0D1A8811}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C583C9B1-F810-44EE-B5C6-AD5F0D1A8811}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C583C9B1-F810-44EE-B5C6-AD5F0D1A8811}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{894F300C-CC13-47BD-A579-8D8CBBB99CCA} = {BF7E0394-E2B0-46FD-BC01-7BD5A95B0014}
+		{84C95119-3642-4422-A605-B4188F3E0E7C} = {5FCF94AE-DF81-4A58-B2DA-99E7213493C4}
+		{1B2AFB5D-23E6-4AF2-B2AC-413FF364BA9F} = {BF7E0394-E2B0-46FD-BC01-7BD5A95B0014}
+		{CA109ED4-B4C3-4525-AA8B-FB9329FEDC9F} = {5FCF94AE-DF81-4A58-B2DA-99E7213493C4}
+		{C898465F-C2EC-4319-B3D8-37E9ECC28CF2} = {5FCF94AE-DF81-4A58-B2DA-99E7213493C4}
+		{29A0D814-7C77-40B8-B2CB-161ECE82305D} = {BF7E0394-E2B0-46FD-BC01-7BD5A95B0014}
+		{C2BA49D3-A9FA-4CB1-A0FB-D9A57D034DA3} = {5FCF94AE-DF81-4A58-B2DA-99E7213493C4}
+		{C583C9B1-F810-44EE-B5C6-AD5F0D1A8811} = {BF7E0394-E2B0-46FD-BC01-7BD5A95B0014}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {754964B3-2F37-47A1-A49F-A19869EE4313}
+	EndGlobalSection
+EndGlobal
