@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <VersionPrefix>1.0.4</VersionPrefix>
+    <TargetFrameworks>netcoreapp1.1;netcoreapp2.0;net46</TargetFrameworks>
+    <AssemblyName>Client</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>Client</PackageId>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyConfigurationAttribute>true</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>true</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>true</GenerateAssemblyInformationalVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\provider\relay\src\Microsoft.Azure.Devices.Proxy.Relay\Microsoft.Azure.Devices.Proxy.Relay.csproj" />
+    <ProjectReference Include="..\..\..\provider\webapp\test\Host\Microsoft.Azure.Devices.Proxy.Kestrel.csproj" />
+    <ProjectReference Include="..\..\src\Microsoft.Azure.Devices.Proxy.Opc.Ua\Microsoft.Azure.Devices.Proxy.Opc.Ua.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.3.352.10" />
+  </ItemGroup>
+
+</Project>
