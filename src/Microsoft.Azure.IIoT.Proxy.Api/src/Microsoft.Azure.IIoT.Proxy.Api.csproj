@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Managed Service API for IoT Device Proxy</Description>
+    <AssemblyTitle>Microsoft Azure Device Proxy API</AssemblyTitle>
+    <Authors>microsoft</Authors>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <PackageTags>Azure;IoT;Edge;websocket;Proxy;.NET</PackageTags>
+    <PackageReleaseNotes>https://github.com/Azure/iot-edge-opc-proxy/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/Azure/iot-edge-opc-proxy</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/iot-edge-opc-proxy/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Azure/iot-edge-opc-proxy</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Microsoft.Azure.IIoT.Proxy\src\Microsoft.Azure.IIoT.Proxy.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Signed' ">
+    <DefineConstants>$(DefineConstants);RELEASE_DELAY_SIGN</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+</Project>

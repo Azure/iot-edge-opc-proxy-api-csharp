@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Simple TCP/IP client sample application</Description>
+    <AssemblyTitle>Simple TCP/IP client sample</AssemblyTitle>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Signed' ">
+    <DefineConstants>$(DefineConstants);RELEASE_DELAY_SIGN</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Microsoft.Azure.IIoT.Proxy.Websocket\host\Microsoft.Azure.IIoT.Proxy.Websocket.Host.csproj" />
+    <ProjectReference Include="..\src\Microsoft.Azure.IIoT.Proxy.Api.csproj" />
+  </ItemGroup>
+
+</Project>

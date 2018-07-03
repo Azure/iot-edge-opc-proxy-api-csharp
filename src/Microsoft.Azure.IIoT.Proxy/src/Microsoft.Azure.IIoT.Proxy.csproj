@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Common Proxy functionality</Description>
+    <Authors>microsoft</Authors>
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    <PackageTags>Azure;IoT;Edge;websocket;Proxy;.NET</PackageTags>
+    <PackageReleaseNotes>https://github.com/Azure/iot-edge-opc-proxy/releases</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/Azure/iot-edge-opc-proxy</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Azure/iot-edge-opc-proxy/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Azure/iot-edge-opc-proxy</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+  </ItemGroup>
+  <Choose>
+    <When Condition="Exists('..\..\..\..\common')">
+      <ItemGroup>
+        <ProjectReference Include="..\..\..\..\common\src\Microsoft.Azure.IIoT\src\Microsoft.Azure.IIoT.csproj" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.Azure.IIoT" Version="1.0.0-preview001" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Signed' ">
+    <DefineConstants>$(DefineConstants);RELEASE_DELAY_SIGN</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+</Project>

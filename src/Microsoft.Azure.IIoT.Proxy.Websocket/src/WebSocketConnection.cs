@@ -1,0 +1,49 @@
+﻿// ------------------------------------------------------------
+//  Copyright (c) Microsoft Corporation.  All rights reserved.
+//  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
+// ------------------------------------------------------------
+
+namespace Microsoft.Azure.IIoT.Proxy.Provider {
+    using Microsoft.Azure.IIoT.Proxy.Models;
+    using Microsoft.Azure.IIoT.Proxy.Serializer;
+    using Microsoft.Azure.IIoT.Utils;
+    using System;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Specialized implementation of a websocket based message stream
+    /// </summary>
+    internal class WebSocketConnection : ConnectionBase<WebSocketStream> {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <param name="streamId"></param>
+        /// <param name="encoding"></param>
+        /// <param name="connectionString"></param>
+        public WebSocketConnection(WebSocketMiddleware provider, Reference streamId,
+            Reference remoteId, CodecId encoding, ConnectionString connectionString) :
+            base(streamId, remoteId, encoding, connectionString) {
+            _provider = provider;
+        }
+
+        /// <summary>
+        /// Close connection
+        /// </summary>
+        /// <returns></returns>
+        public override void Close() {
+            // Remove ourselves from the listener...
+            _provider._connectionMap.TryRemove(StreamId, out var stream);
+        }
+
+        protected override async Task CloseStreamAsync(ICodecStream<WebSocketStream> codec) {
+            var ct = new CancellationTokenSource(_closeTimeout).Token;
+            await Try.Async(codec.Stream.CloseAsync, ct).ConfigureAwait(false);
+        }
+
+        private static readonly TimeSpan _closeTimeout = TimeSpan.FromSeconds(3);
+        private WebSocketMiddleware _provider;
+    }
+}
+
