@@ -10,15 +10,16 @@ addons:
     packages:
 env:
   matrix:
+    - target="src/Microsoft.Azure.IIoT.Proxy/src" framework="netstandard2.0"
     - target="src/Microsoft.Azure.IIoT.Proxy.Api/src" framework="netstandard2.0"
     - target="src/Microsoft.Azure.IIoT.Proxy.Api/cli" framework="netcoreapp2.1"
     - target="src/Microsoft.Azure.IIoT.OpcUa.Proxy/src" framework="netstandard2.0"
     - target="src/Microsoft.Azure.IIoT.OpcUa.Proxy/cli" framework="netcoreapp2.1"
-    - target="src/Microsoft.Azure.IIoT.Net.Netcat/src" framework="netcoreapp2.1"
-    - target="src/Microsoft.Azure.IIoT.Http.Relay/src" framework="netcoreapp2.1"
+    - target="src/Microsoft.Azure.IIoT.Proxy.Netcat/src" framework="netcoreapp2.1"
+    - target="src/Microsoft.Azure.IIoT.Proxy.Http.Relay/src" framework="netcoreapp2.1"
 install:
 script: 
-  - # dotnet restore
+  - dotnet restore --configfile NuGet.Config -nowarn:msb3202,nu1503
   - cd "$target"
-  - # dotnet build -f $framework -c Debug
-  - # dotnet build -f $framework -c Release
+  - dotnet build -f $framework -c Debug
+  - dotnet build -f $framework -c Release

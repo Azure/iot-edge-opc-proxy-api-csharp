@@ -1,19 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <AssemblyName>Client</AssemblyName>
+    <AssemblyName>OpcUaProxyClient</AssemblyName>
     <OutputType>Exe</OutputType>
     <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\Microsoft.Azure.IIoT.Proxy.Websocket\host\Microsoft.Azure.IIoT.Proxy.Websocket.Host.csproj" />
     <ProjectReference Include="..\src\Microsoft.Azure.IIoT.OpcUa.Proxy.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.3.352.12" />
   </ItemGroup>
-
 </Project>
