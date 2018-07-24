@@ -4,12 +4,12 @@
 // ------------------------------------------------------------
 
 namespace Microsoft.Azure.IIoT.Proxy.Provider {
+    using Microsoft.Azure.IIoT.Utils;
     using System;
     using System.Net.WebSockets;
     using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
-    using Microsoft.Azure.IIoT.Utils;
 
     /// <summary>
     /// Buffered Websocket stream. Wraps a Websocket and provides read and write

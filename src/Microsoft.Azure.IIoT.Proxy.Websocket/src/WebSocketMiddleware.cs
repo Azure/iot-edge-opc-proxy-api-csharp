@@ -86,7 +86,7 @@ namespace Microsoft.Azure.IIoT.Proxy.Provider {
                 Path = streamId.ToString()
             };
             var connection = new WebSocketConnection(this, streamId, remoteId, encoding,
-                ConnectionString.Create(uri.Uri, "proxy", "secret"));
+                ConnectionString.CreateWithEndpointAndToken(uri.Uri, "proxy", "secret"));
             _connectionMap.AddOrUpdate(streamId, connection, (r, s) => connection);
             return Task.FromResult((IConnection)connection);
         }

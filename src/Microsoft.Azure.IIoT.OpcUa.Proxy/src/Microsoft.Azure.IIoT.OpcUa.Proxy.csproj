@@ -4,8 +4,11 @@
     <Description>Azure IIoT Proxy OPC UA Stack plugin</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.3.352.12" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Symbols" Version="1.3.352.12" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.353.15" />
+    <PackageReference Include="System.Net.Security" Version="4.3.2" />
+    <PackageReference Include="System.Private.ServiceModel" Version="4.5.1" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.5.1" />
+    <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Microsoft.Azure.IIoT.Proxy.Api\src\Microsoft.Azure.IIoT.Proxy.Api.csproj" />
