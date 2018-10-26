@@ -81,15 +81,6 @@ namespace NetCoreConsoleClient {
                             }
                             endpointURL = args[i];
                             break;
-                        case "-R":
-                        case "--relay":
-                            Microsoft.Azure.Devices.Proxy.Socket.Provider =
-                                Microsoft.Azure.Devices.Proxy.Provider.RelayProvider.CreateAsync().Result;
-                            break;
-                        case "-W":
-                        case "--websocket":
-                            Microsoft.Azure.Devices.Proxy.Provider.WebSocketProvider.Create();
-                            break;
                         case "-?":
                         case "-h":
                         case "--help":
@@ -106,10 +97,6 @@ namespace NetCoreConsoleClient {
 usage:       NetCoreConsoleClient [options] operation [args]
 
 Options:
-    --relay
-     -R      Use relay provider instead of default provider.
-    --websocket
-     -W      Use websocket kestrel provider.
     --count
      -c      Number of operations to run.
              Defaults to 0 == infinite or 1 in case of --all.

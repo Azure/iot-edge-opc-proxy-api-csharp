@@ -17,13 +17,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\provider\relay\src\Microsoft.Azure.Devices.Proxy.Relay\Microsoft.Azure.Devices.Proxy.Relay.csproj" />
-    <ProjectReference Include="..\..\..\provider\webapp\test\Host\Microsoft.Azure.Devices.Proxy.Kestrel.csproj" />
     <ProjectReference Include="..\..\src\Microsoft.Azure.Devices.Proxy.Opc.Ua\Microsoft.Azure.Devices.Proxy.Opc.Ua.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.3.352.10" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.353.15" />
   </ItemGroup>
 
 </Project>

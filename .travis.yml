@@ -11,8 +11,6 @@ env:
     - target="samples/simple/tcp" framework="netcoreapp2.0"
     - target="samples/netcat" framework="netcoreapp1.1"
     - target="samples/netcat" framework="netcoreapp2.0"
-    - target="samples/http" framework="netcoreapp1.1"
-    - target="samples/http" framework="netcoreapp2.0"
 install:
   - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
   - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg

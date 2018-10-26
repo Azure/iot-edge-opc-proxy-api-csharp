@@ -264,14 +264,6 @@ options:
         /// Cats from std in to network stream and back out to std out.
         /// </summary>
         public async Task RunAsync(CancellationToken ct) {
-
-            if (UseRelay) {
-                Socket.Provider = await Provider.RelayProvider.CreateAsync();
-            }
-            else if (UseWS) {
-                Provider.WebSocketProvider.Create();
-            }
-
             if (LocalPort == 0) {
                 await StdAsync(ct);
             }

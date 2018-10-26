@@ -103,14 +103,6 @@ namespace Microsoft.Azure.Devices.Proxy.Samples {
                         case "--bypass":
                             bypass = true;
                             break;
-                        case "-R":
-                        case "--relay":
-                            Socket.Provider = Provider.RelayProvider.CreateAsync().Result;
-                            break;
-                        case "-W":
-                        case "--websocket":
-                            Provider.WebSocketProvider.Create();
-                            break;
                         case "-?":
                         case "--help":
                             throw new ArgumentException("Help");
@@ -127,10 +119,6 @@ Simple - Proxy .net simple tcp/ip sample.
 usage:       Simple [options] operation [args]
 
 Options:
-    --relay
-     -R      Use relay provider instead of default provider.
-    --websocket
-     -W      Use websocket kestrel provider.
     --buffer-size
      -z      Specifies the buffer size for performance tests.
              Defaults to 60000 bytes.
