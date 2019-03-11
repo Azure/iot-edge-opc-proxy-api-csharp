@@ -287,22 +287,26 @@ namespace Microsoft.Azure.Devices.Proxy {
                     await SendBlock.SendAsync(Message.Create(_socket.Id, RemoteId,
                     CloseRequest.Create()), ct).ConfigureAwait(false);
                 }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch { }
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
                 try {
                     await connection.CloseAsync().ConfigureAwait(false);
                 }
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
                 catch { }
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
 
-               // try {
-               //     SendBlock.Complete();
-               //     await SendBlock.Completion.ConfigureAwait(false);
-               // }
-               // catch { }
-               // try {
-               //     ReceiveBlock.Complete();
-               //     await ReceiveBlock.Completion.ConfigureAwait(false);
-               // }
-               // catch { }
+                // try {
+                //     SendBlock.Complete();
+                //     await SendBlock.Completion.ConfigureAwait(false);
+                // }
+                // catch { }
+                // try {
+                //     ReceiveBlock.Complete();
+                //     await ReceiveBlock.Completion.ConfigureAwait(false);
+                // }
+                // catch { }
             }
             finally {
                 ProxyEventSource.Log.StreamClosed(this, null);

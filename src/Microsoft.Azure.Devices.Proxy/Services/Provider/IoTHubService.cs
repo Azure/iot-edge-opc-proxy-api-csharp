@@ -569,7 +569,7 @@ namespace Microsoft.Azure.Devices.Proxy.Provider {
                 }
                 catch (TimeoutException) {
                     if (reloadTimeout > TimeSpan.FromHours(6)) {
-                        // If we are idle for 6 hours, only refresh every week. 
+                        // If we are idle for 6 hours, only refresh every week.
                         reloadTimeout = TimeSpan.FromDays(7);
                     }
                     else {
