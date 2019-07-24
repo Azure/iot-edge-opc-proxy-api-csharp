@@ -4,11 +4,11 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 [![Build Status](https://travis-ci.org/Azure/iot-edge-opc-proxy-api-csharp.svg?branch=master)](https://travis-ci.org/Azure/iot-edge-opc-proxy-api-csharp)
 
-# Azure IoT Edge OPC Proxy API
+# OPC Proxy API
 
-Using the Azure IoT Edge OPC Reverse Proxy API, client applications can connect to devices in a local gateway network and exchange transparent payloads, allowing developers to implement applications in Azure where the command and control protocol layer resides in the cloud. 
+Using the OPC Proxy API, client applications can connect to devices in a local gateway network and exchange transparent payloads, allowing developers to implement applications in Azure where the command and control protocol layer resides in the cloud. 
 
-The OPC proxy edge module itself can be found at https://github.com/Azure/iot-edge-opc-proxy.
+The OPC proxy edge module itself can be found at https://github.com/Azure/iot-edge-opc-proxy/tree/master.
 
 # Getting started
 
@@ -23,15 +23,6 @@ You also need to start the proxy gateway itself.  You can run it using [docker](
 The following samples are included to demonstrate the use of the .net API:
 
 - An [OPC UA client](/samples/opc-ua/readme.md) that shows how the [OPC-Foundation reference stack](https://github.com/OPCFoundation/UA-.NETStandardLibrary) can be used to relay OPC UA from the cloud to machines in a local gateway network. 
-
-- PNetCat - A [Netcat like proxy client](/samples/netcat/readme.md) that you can use to interact
-with an arbitrary host and port in the proxy network and for example tunnel SSH using the ssh proxy option.  It supports port bridge server and stdin/stdout netcat mode.
-
-- A [Simple TCP/IP services client](/samples/simple/tcp/readme.md) that demonstrates different socket API calls.
-
-- A [Browser client](/samples/simple/dns/readme.md) that uses the remote browsing capabilities of the proxy.  Use it to enumerate services and resolve host names across all proxies.
-
-- A simple [Reverse HTTP Web Proxy](/samples/http/readme.md) that shows how you can access a web server in the proxy network through a reverse Web proxy Server implemented using ASP.Net Core and Kestrel. 
 
 # Support and Contributions
 
